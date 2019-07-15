@@ -1,5 +1,7 @@
 {
   "name": "TimeController",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
