@@ -40,6 +40,3 @@ Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/int
 [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 
 [Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
-
-
-C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\zipalign -v 4 app-release-unsigned.apk HelloWorldFromKeikai.apk
