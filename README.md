@@ -35,8 +35,20 @@ Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/int
 
 [Color Picker](https://www.npmjs.com/package/ngx-color-picker)
 
+
+### 20190721 Calculate chart length, rewrite, border situation, bugfix
+
+Bugfix:
+```javascript
+var xxx = list.filter(...)[index].someLabel,
+var xxx = someValue // list would be changed -> pass value via reference, be cautious
+```
+
 ### TODO
+
+[Chart given length labels and calibrations](https://canvasjs.com/javascript-charts/json-data-api-ajax-chart/)
 
 [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 
 [Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
+

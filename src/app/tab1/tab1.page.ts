@@ -68,26 +68,31 @@ export class Tab1Page {
       color: 'gray',
     }, {
       id: 1,
+      timestamp: this.ts.getTimestampToday() - 11000,
+      label: 'game',
+      color: 'green',
+    }, {
+      id: 2,
       timestamp: this.ts.getTimestampToday() - 1000,
       label: 'work',
       color: '#FF0000',
     }, {
-      id: 2,
+      id: 3,
       timestamp: this.ts.getTimestampToday() + 1000,
       label: 'study',
       color: 'blue',
     }, {
-      id: 3,
+      id: 4,
       timestamp: this.ts.getTimestampToday() + 2000,
       label: 'others',
       color: 'gold',
     }, {
-      id: 4,
+      id: 5,
       timestamp: this.ts.getTimestampToday() + 4000,
       label: 'game',
       color: 'green',
     }, {
-      id: 5,
+      id: 6,
       timestamp: this.ts.getTimestampToday() + 8000,
       label: 'sleep',
       color: 'black',
@@ -99,9 +104,9 @@ export class Tab1Page {
   // tslint:disable-next-line: use-life-cycle-interface
   ngOnInit() {
     // TODO get the data from storage
+    console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
-    console.log('Start up');
   }
 
   // Add record
@@ -198,7 +203,7 @@ export class Tab1Page {
     let timeStopCal: number;
     const timeDayStart: number = calDayTimestamp;
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
-    const resultList: {timestamp: number, localId: number, id: number, label: string, color: string, length: number}[] = [];
+    const resultList: {length: number, label: string, color: string, timestamp: number, localId: number, id: number}[] = [];
     // Get record data via timestamp in range of today [)
     const recordCal = Object.create(this.storage.record.filter(obj => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd));
 
@@ -211,7 +216,7 @@ export class Tab1Page {
         (prev: { id: number; }, curr: { id: number; }) => prev.id < curr.id ? prev : curr).id;
       // Find the record one before minimum via id
       // Assume the uniqueness of data recorded
-      const recordHeadItem = this.storage.record.filter(obj => obj.id === recordHeadItemId - 1)[0];
+      const recordHeadItem = Object.create(this.storage.record.filter(obj => obj.id === recordHeadItemId - 1)[0]);
       // Change the record timestamp to today start for calcualte
       recordHeadItem.timestamp = timeDayStart;
       // Add the record in the top of record list for calculate
@@ -226,13 +231,13 @@ export class Tab1Page {
       const timeStart: number = recordCal[i].timestamp;
       const timeEnd: number = i === recordCal.length - 1 ? timeStopCal : recordCal[i + 1].timestamp;
       resultList.push({
+        // TODO Attention result 0 posibility, check if affected in HTML
+        length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
+        label: recordCal[i].label,
+        color: recordCal[i].color,
         timestamp: timeDayStart,
         localId: i,
         id: recordCal[i].id,
-        label: recordCal[i].label,
-        color: recordCal[i].color,
-        // TODO Attention result 0 posibility, check if affected in HTML
-        length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
       });
     }
 
