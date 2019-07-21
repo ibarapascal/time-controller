@@ -16,5 +16,15 @@ export class TimestampService {
         return Math.floor(dateTodayObj.getTime() / 1000);
     }
 
+    showTimeInSeconds(htmlElementId: string) {
+        const timeToday = new Date();
+        const h = timeToday.getHours();
+        const mtemp = timeToday.getMinutes();
+        const stemp = timeToday.getSeconds();
+        const m = mtemp < 10 ? '0' + mtemp.toString() : mtemp.toString();
+        const s = stemp < 10 ? '0' + stemp.toString() : stemp.toString();
+        document.getElementById(htmlElementId).innerHTML = h + ':' + m + ':' + s;
+    }
+
 }
 

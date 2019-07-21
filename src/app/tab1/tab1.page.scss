@@ -1,12 +1,22 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
-}
-button.custom{
-  width: 100px;
+button.customLabel{
+  width: 100%;
   border: none;
+  display:inline-block;
 }
-div.displayDiv{
-  width:50%;
+button.customX{
+  width: 20%;
+}
+div.chartDiv{
+  width:55%;
+  height:100%;
   border:1px solid;
+  background-color:gainsboro;
+  float:left;
+}
+div.calibrationDiv{
+  width:40%;
+  height:100%;
+  border:1px solid;
+  background-color:gainsboro;
+  display:inline-block;
 }

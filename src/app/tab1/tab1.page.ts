@@ -10,6 +10,10 @@ export class Tab1Page {
   constructor(
     private ts: TimestampService
     ) {
+      // Unfuntion in ionic/cordova
+      setTimeout(() => {
+        this.ts.showTimeInSeconds('timeNow');
+      }, 1000);
   }
 
   // Variables only used in pages.
@@ -24,7 +28,7 @@ export class Tab1Page {
   // TODO need correction
   lengthDisplayOneDay = 600;
   // Edit label flag
-  labelDelEnableFlg = 0;
+  labelEditable = 0;
   // display id and timestamp list
   displayList = [];
   // Fake data
@@ -106,7 +110,8 @@ export class Tab1Page {
     // TODO get the data from storage
     console.log('Start up');
     // Refresh today display
-    this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    this.calculateEachDayDisplay(this.ts.getTimestampToday() - 86400);
+
   }
 
   // Add record
@@ -180,7 +185,11 @@ export class Tab1Page {
 
   // Edit label
   onLabelEdit() {
-    this.labelDelEnableFlg ? this.labelDelEnableFlg = 0 : this.labelDelEnableFlg = 1;
+    // Reset input label name
+    this.labelAdded = '';
+    // Reset input label color
+    this.colorAdded = '';
+    this.labelEditable ? this.labelEditable = 0 : this.labelEditable = 1;
   }
 
   // Set label to default

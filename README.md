@@ -44,11 +44,24 @@ var xxx = list.filter(...)[index].someLabel,
 var xxx = someValue // list would be changed -> pass value via reference, be cautious
 ```
 
+### 20190722 Scroll bar, clock time, html adjust
+
+[Ionic scroll bar](https://ionicframework.com/docs/api/content)
+
+[Display a clock](https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock)
+
+
 ### TODO
+
+Settimeout not function in ionic/cordova => need to be solved.
+
+Adjust input color selection position.
+
+[Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
 
 [Chart given length labels and calibrations](https://canvasjs.com/javascript-charts/json-data-api-ajax-chart/)
 
 [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 
-[Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
+
 

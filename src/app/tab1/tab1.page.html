@@ -1,94 +1,92 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th style="text-align:center">Time</th>
-      <th style="text-align:center">Label</th>
-    </tr>
-  </thead>
+<ion-content [scrollEvents]="true">
   <!-- Summary the css style later -->
-  <tbody>
-    <tr>
-      <!-- <td class="col-md-12" style="border:1px solid">
-        <div *ngFor="let item of displayList"
-          class="displayDiv col-md-6"
-          [style.backgroundColor]="item.color"
-          [style.height]="item.length+'px'">
-          XXX
-        </div>
-        <div class="col-md-6"
-          style="width:50%; background-color:blue;">
-          XXX
-        </div>
-      </td> -->
-
-      <td style="height:400px" align="center">
-
-        <!-- TEST
-        <div *ngIf="storage.setting.length">
-          test setting display
-          <div *ngFor="let item of storage.setting">
-            {{item.label}}<span> </span>{{item.color}}
+  <!-- Achieve first -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="text-align:center">
+          <div id="timeNow" style="font-size: 1.5em;"></div>
+        </th>
+        <th style="text-align:center">
+          <div align="left">
+            <button type="button" class="btn btn-primary customLabel"
+              style="background-color:gray;"
+              (click)="onLabelEdit()">
+              <div *ngIf="!labelEditable">Edit labels</div>
+              <div *ngIf="labelEditable">Return</div>
+            </button>
           </div>
-        </div> -->
+        </th>
+      </tr>
+    </thead>
 
-        <div style="margin-bottom:10px" align="right">
-          <button type="button" class="btn btn-primary custom"
-            style="background-color:black;"
-            (click)="onLabelRevert()">Revert</button>
-        </div>
-
-        <!-- TODO drag and drop -->
-        <div *ngIf="storage.setting.length">
-          <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
-            <button type="button" class="btn btn-primary custom"
-              [style.background-color]="item.color"
-              (click)="onLabelClick(item.label)">{{item.label}}</button>
-            <button type="button" class="btn btn-sm"
-              *ngIf="labelDelEnableFlg"
-              (click)="onLabelDelete(item.label)">X</button>
+    <tbody>
+      <tr>
+        <td style="border:1px solid; width:66.6%;"
+          [style.height]="lengthDisplayOneDay + 'px'">
+          <div class="chartDiv">
+            <div *ngFor="let item of displayList"
+            [style.backgroundColor]="item.color"
+            [style.height]="item.length + 'px'">
+            LABEL
           </div>
-        </div>
-
-        <div *ngIf="!storage.setting.length">
-          You can creat your label below.
-        </div>
-        
-        <div align="right" *ngIf="labelDelEnableFlg">
-          <button type="button" class="btn btn-primary custom"
-            style="background-color:black;"
-            (click)="onLabelDefault()">
-            Default
-          </button>
-        </div>
-        <div align="right">
-          <button type="button" class="btn btn-primary custom"
-            style="background-color:black;"
-            (click)="onLabelEdit()">
-            <div *ngIf="!labelDelEnableFlg">Edit labels</div>
-            <div *ngIf="labelDelEnableFlg">Return</div>
-          </button>
-        </div>
-
-        <div *ngIf="labelDelEnableFlg">
-          <input [(colorPicker)]="colorAdded" [style.background]="colorAdded"
-            placeholder="Input your new label"
-            [(ngModel)]="labelAdded"
-            [cpPosition]="'bottom'"
-            style="width:200px;"/>
-          <button type="button" class="btn btn-primary custom"
-            style="background-color:black;"
-            (click)="onLabelAdd(labelAdded, colorAdded)">Add</button>
-        </div>
-
-        <!-- TEST
-        <div *ngIf="storage.record.length">
-          test record display
-          <div *ngFor="let record of storage.record">
-            {{record.id}}<span> </span>{{record.timestamp}}<span> </span>{{record.label}}
           </div>
-        </div> -->
+          <div class="calibrationDiv">
+            TODO: Calibration
+          </div>
+        </td>
+  
+        <td align="center">
+          <div *ngIf="storage.setting.length">
+            <div *ngIf="labelEditable" style="margin-bottom:10px">
+              <button type="button" class="btn btn-primary customLabel"
+                style="background-color:gray;"
+                (click)="onLabelDefault()">
+                Default
+              </button>
+            </div>
+            <!-- TODO drag and drop -->
+            <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
+              <button type="button" class="btn btn-primary customLabel"
+                [style.background-color]="item.color"
+                [style.width]="labelEditable ? '80%' : '100%'"
+                (click)="onLabelClick(item.label)">
+                {{item.label}}
+              </button>
+              <button type="button" class="btn btn-sm customX"
+                *ngIf="labelEditable"
+                (click)="onLabelDelete(item.label)">
+                X
+              </button>
+            </div>
+            <div *ngIf="labelEditable">
+              <input [(colorPicker)]="colorAdded"
+                [style.background]="colorAdded"
+                placeholder="Label Name"
+                [(ngModel)]="labelAdded"
+                [cpPosition]="'bottom'"
+                style="width: 100%"/>
+              <button type="button" class="btn btn-primary customLabel"
+                style="background-color:gray;"
+                (click)="onLabelAdd(labelAdded, colorAdded)">
+                Add
+              </button>
+            </div>
+          </div>
+  
+          <div *ngIf="!storage.setting.length">
+            You can creat your label below.
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div style="margin-bottom:10px" align="right">
+    <button type="button" class="btn btn-primary customLabel"
+      style="background-color:black;"
+      (click)="onLabelRevert()">Revert</button>
+  </div>
 
-      </td>
-    </tr>
-  </tbody>
-</table>
+</ion-content>
+
