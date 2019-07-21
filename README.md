@@ -48,12 +48,27 @@ var xxx = list.filter(...)[index].someLabel,
 var xxx = someValue // list would be changed -> pass value via reference, be cautious
 ```
 
-### 20190722 Scroll bar, clock time, html adjust
+### 20190722 Scroll bar, clock time, html adjust, Angular update
+
+Adjust input color selection position.
 
 [Ionic scroll bar](https://ionicframework.com/docs/api/content)
 
 [Display a clock](https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock)
 
+[Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
+
+Problems during Angular CLI / Material Update
+
+[Module not found => restart VScode](https://stackoverflow.com/questions/38900357/no-exported-member-node-modules)
+
+TODO
+
+Build error
+
+Could not find the implementation for builder @angular-devkit/build-angular
+
+Prepare to rebuild the references via angualr cli 8 and ionic 4.
 
 ### TODO
 
@@ -61,11 +76,7 @@ Bugfix:
 
 UTC and local time for chart refresh.
 
-Settimeout not function in ionic/cordova => need to be solved.
-
-Adjust input color selection position.
-
-[Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
+Settimeout not function in ionic/cordova.
 
 [Chart given length labels and calibrations](https://canvasjs.com/javascript-charts/json-data-api-ajax-chart/)
 
