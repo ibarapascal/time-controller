@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TimestampService } from '../service/timestampService';
 
 @Component({
   selector: 'app-tab1',
@@ -6,14 +7,22 @@ import { Component } from '@angular/core';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  constructor() {
-
+  constructor(
+    private ts: TimestampService
+    ) {
   }
 
+  // Variables only used in pages.
   // Added label name
   labelAdded = '';
   // Added label color
   colorAdded = '';
+
+  // current selected label
+  currentSelectedLabel = '';
+  // length
+  // TODO need correction
+  lengthDisplayOneDay = 600;
   // Edit label flag
   labelDelEnableFlg = 0;
   // display id and timestamp list
@@ -55,60 +64,69 @@ export class Tab1Page {
     record: [{
       id: 0,
       timestamp: 0,
-      label: '',
+      label: 'default',
+      color: 'gray',
     }, {
       id: 1,
-      timestamp: 1561000000,
-      label: 'study',
+      timestamp: this.ts.getTimestampToday() - 1000,
+      label: 'work',
+      color: '#FF0000',
     }, {
       id: 2,
-      timestamp: 1562000000,
-      label: 'work',
+      timestamp: this.ts.getTimestampToday() + 1000,
+      label: 'study',
+      color: 'blue',
     }, {
       id: 3,
-      timestamp: 1563000000,
-      label: 'game',
+      timestamp: this.ts.getTimestampToday() + 2000,
+      label: 'others',
+      color: 'gold',
     }, {
       id: 4,
-      timestamp: 1563463000,
-      label: 'others',
+      timestamp: this.ts.getTimestampToday() + 4000,
+      label: 'game',
+      color: 'green',
     }, {
       id: 5,
-      timestamp: 1563480000,
-      label: 'work',
+      timestamp: this.ts.getTimestampToday() + 8000,
+      label: 'sleep',
+      color: 'black',
     }],
     displayRecordIdList: [],
     editcache: [],
   };
 
-  // TODO need correction
-  // length
-  lengthDisplayToday = 600;
-
   // tslint:disable-next-line: use-life-cycle-interface
   ngOnInit() {
     // TODO get the data from storage
-    // Refresh display
-    this.calculateTheDisplayToday();
+    // Refresh today display
+    this.calculateEachDayDisplay(this.ts.getTimestampToday());
     console.log('Start up');
   }
 
   // Add record
+  // TODO to ensure that user must click once within two seconds, or only use the lastest input
+  //    to keep the uniqueness of data recorded in timestamp
+  //    used in other event (maybe)
   onLabelClick(labelSelected: string) {
-    if (this.storage.record.length) {
-      if (this.storage.record[this.storage.record.length - 1].label === labelSelected) {
-        return;
-      }
+    // Same with current label, do noting
+    if (this.currentSelectedLabel === labelSelected) {
+      // TODO alert: Current event is the same with button clicked.
+      return;
     }
-    // Get the bigest id (assume sorted)
-    const id: number = this.storage.record.length ?
-      this.storage.record[this.storage.record.length - 1].id + 1 : 0;
-    // Get timestamp in second
-    const timestamp: number = this.getTimestampNow();
     // Add
-    this.storage.record.push({id, timestamp, label: labelSelected});
-    // Refresh display
-    this.calculateTheDisplayToday();
+    this.storage.record.push({
+      // At least one item of record existence promised
+      // Record id well sorted and continuous promised
+      id: this.storage.record.length,
+      timestamp: this.ts.getTimestampNow(),
+      label: labelSelected,
+      color: this.storage.setting.filter(obj => obj.label === labelSelected)[0].color,
+    });
+    // Record current label
+    this.currentSelectedLabel = labelSelected;
+    // Refresh today display
+    this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
 
   // Remove record
@@ -121,24 +139,38 @@ export class Tab1Page {
         id: 0,
         timestamp: 0,
         label: 'default',
+        color: 'gray',
       });
     }
-    // Refresh display
-    this.calculateTheDisplayToday();
+    // Revert current label
+    this.currentSelectedLabel = this.storage.record[this.storage.record.length - 1].label;
+    // Refresh today display
+    this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
 
   // Add label
+  // Setting may be empty
+  // Uniqueness ensured
   onLabelAdd(label: string, color: string) {
-    this.storage.setting.push({label: label ? label : 'label', color: color ? color : '#000000'});
+    if (!label || !color) {
+      // TODO may add default option.
+      // TODO alert: Please input label name and select color.
+    } else if (this.storage.setting.some(obj => obj.label === label)) { // if setting is empty, there is no error.
+      // TODO alert: There are {{label}} existed, please select another label name.
+    } else if (this.storage.setting.some(obj => obj.color === color)) {
+      // TODO alert: There are {{color}} existed, please select another label name.
+    } else {
+      this.storage.setting.push({label, color});
+    }
   }
 
   // Remove label
+  // Only remove the existing label from displayed button
+  // Remove the only one of selected
   onLabelDelete(label: string) {
-    for (let i = 0; i < this.storage.setting.length; i++) {
-      if (this.storage.setting[i].label === label) {
-        this.storage.setting.splice(i, 1);
-      }
-    }
+    const itemDelete = this.storage.setting.filter(obj => obj.label === label)[0]; // Uniqueness premised
+    const indexOfItemDelete = this.storage.setting.indexOf(itemDelete);
+    this.storage.setting.splice(indexOfItemDelete, 1);
   }
 
   // Edit label
@@ -148,85 +180,66 @@ export class Tab1Page {
 
   // Set label to default
   onLabelDefault() {
-    // Pass object by reference
+    // Pass object by reference: NG
     // this.storage.setting = this.storage.defaultSetting;
-    // Pass object by value
+    // Pass object by value: OK
     this.storage.setting = Object.create(this.storage.defaultSetting);
   }
 
-  getTimestampNow(): number {
-    return Math.floor(Date.now() / 1000);
-  }
+  // Make common component event processing code
+  // For multiple days display
+  // Have two situation, one is that past date display, another is today's display
+  // Need to consider the border problem
+  // Deal with each day
+  calculateEachDayDisplay(calDayTimestamp: number) {
 
-  getTimestampToday(): number {
-    const dateNowObj: Date = new Date();
-    const month: string = (dateNowObj.getUTCMonth() + 1).toString(); // months from 1-12
-    const day: string = dateNowObj.getUTCDate().toString();
-    const year: string = dateNowObj.getUTCFullYear().toString();
-    const dateTodayString: string = year + '-' + month + '-' + day;
-    const dateTodayObj: Date = new Date(dateTodayString);
-    return Math.floor(dateTodayObj.getTime() / 1000);
-  }
+    // Initialize
+    const timeNow: number = this.ts.getTimestampNow();
+    let timeStopCal: number;
+    const timeDayStart: number = calDayTimestamp;
+    const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
+    const resultList: {timestamp: number, localId: number, id: number, label: string, color: string, length: number}[] = [];
+    // Get record data via timestamp in range of today [)
+    const recordCal = Object.create(this.storage.record.filter(obj => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd));
 
-  calculateDisplayLength(timeStart: number, timeEnd: number): number {
-    return Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayToday);
-  }
+    // Deal with the top
+    // The situation when one event start before the day calculating and last till that day
+    // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
+    if (recordCal.some((obj: { timestamp: number; }) => obj.timestamp !== timeDayStart)) {
+      // Find the minimum id
+      const recordHeadItemId: number = recordCal.reduce(
+        (prev: { id: number; }, curr: { id: number; }) => prev.id < curr.id ? prev : curr).id;
+      // Find the record one before minimum via id
+      // Assume the uniqueness of data recorded
+      const recordHeadItem = this.storage.record.filter(obj => obj.id === recordHeadItemId - 1)[0];
+      // Change the record timestamp to today start for calcualte
+      recordHeadItem.timestamp = timeDayStart;
+      // Add the record in the top of record list for calculate
+      recordCal.splice(0, 0, recordHeadItem);
+    }
 
-  // Get the storage.record always have 1 left with id:0, timestamp:0, label:'default'
-  calculateTheDisplayToday() {
-    const timeNow: number = this.getTimestampNow();
-    const timeTodayStart: number = this.getTimestampToday();
-    const timeTodayEnd: number = timeTodayStart + 86400; // 60*60*24
-    const resultList: {id: number, color: string, length: number }[] = [];
-    const recordToday = this.storage.record.filter(obj => obj.timestamp >= timeTodayStart && obj.timestamp < timeTodayEnd);
-    // Have record
-    if (this.storage.record.length > 1) {
-      // Have record today
-      if (recordToday.length) {
-        // The first block
-        const minId: number = recordToday.reduce((prev, curr) => prev.id < curr.id ? prev : curr).id;
-        resultList.push({
-          id: minId - 1,
-          color: this.storage.setting.filter(x => x.label === this.storage.record[minId - 1].label)[0].color,
-          length: this.calculateDisplayLength(timeTodayStart, this.storage.record[minId].timestamp),
-        });
-        // The middle block(s)
-        for (let i = 0; i < this.storage.record.length; i++) {
-          if (recordToday.indexOf(this.storage.record[i]) !== -1) {
-            // have more than one record today
-            if (recordToday.length > 1 && i !== this.storage.record.length - 1 && i !== 0) {
-              resultList.push({
-                id: this.storage.record[i].id,
-                color: this.storage.setting.filter(x => x.label === this.storage.record[this.storage.record[i].id].label)[0].color,
-                length: this.calculateDisplayLength(this.storage.record[i].timestamp, this.storage.record[i + 1].timestamp),
-              });
-            }}
-        }
-        // The last block
-        const maxId: number = recordToday.reduce((prev, curr) => prev.id > curr.id ? prev : curr).id;
-        resultList.push({
-          id: maxId,
-          color: this.storage.setting.filter(x => x.label === this.storage.record[maxId].label)[0].color,
-          length: this.calculateDisplayLength(this.storage.record[maxId].timestamp, timeNow),
-        });
-      // Have no record today
-      } else {
-        resultList.push({
-          id: this.storage.record.length - 1,
-          color: this.storage.setting.filter(x => x.label === this.storage.record[this.storage.record.length - 1].label)[0].color,
-          length: this.calculateDisplayLength(timeTodayStart, timeNow),
-        });
-      }
-    // Have no record
-    } else {
+    // Deal with the bottom
+    timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;
+
+    // Calculate
+    for (let i = 0; i < recordCal.length; i++) {
+      const timeStart: number = recordCal[i].timestamp;
+      const timeEnd: number = i === recordCal.length - 1 ? timeStopCal : recordCal[i + 1].timestamp;
       resultList.push({
-        id: 0,
-        color: this.storage.setting.filter(x => x.label === this.storage.record[0].label)[0].color,
-        length: this.calculateDisplayLength(timeTodayStart, timeNow),
+        timestamp: timeDayStart,
+        localId: i,
+        id: recordCal[i].id,
+        label: recordCal[i].label,
+        color: recordCal[i].color,
+        // TODO Attention result 0 posibility, check if affected in HTML
+        length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
       });
     }
-    console.log(resultList);
+
+    // Give the display data list
     this.displayList = resultList;
-    return;
+
+    console.log(resultList);
   }
+
 }
