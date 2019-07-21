@@ -37,7 +37,8 @@
         </td>
   
         <td align="center">
-          <div *ngIf="storage.setting.length">
+          <div cdkDropList (cdkDropListDropped)="drop($event)"
+            *ngIf="storage.setting.length">
             <div *ngIf="labelEditable" style="margin-bottom:10px">
               <button type="button" class="btn btn-primary customLabel"
                 style="background-color:gray;"
@@ -46,7 +47,7 @@
               </button>
             </div>
             <!-- TODO drag and drop -->
-            <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
+            <div cdkDrag *ngFor="let item of storage.setting" style="margin-bottom:10px">
               <button type="button" class="btn btn-primary customLabel"
                 [style.background-color]="item.color"
                 [style.width]="labelEditable ? '80%' : '100%'"
@@ -64,8 +65,10 @@
                 [style.background]="colorAdded"
                 placeholder="Label Name"
                 [(ngModel)]="labelAdded"
+                [cpWidth]="'200%'"
+                [cpPositionOffset]="'-200%'"
                 [cpPosition]="'bottom'"
-                style="width: 100%"/>
+                style="width: 100%;"/>
               <button type="button" class="btn btn-primary customLabel"
                 style="background-color:gray;"
                 (click)="onLabelAdd(labelAdded, colorAdded)">

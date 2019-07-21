@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-tab1',
@@ -111,7 +112,10 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday() - 86400);
+  }
 
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.storage.setting, event.previousIndex, event.currentIndex);
   }
 
   // Add record

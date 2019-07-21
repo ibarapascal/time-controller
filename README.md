@@ -35,7 +35,11 @@ Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/int
 
 [Color Picker](https://www.npmjs.com/package/ngx-color-picker)
 
-
+Feature:
+```javascript
+Obj.some(obj => obj.label === label))
+Obj.reduce((prev, curr) => prev.id < curr.id ? prev : curr).id;
+```
 ### 20190721 Calculate chart length, rewrite, border situation, bugfix
 
 Bugfix:
@@ -52,6 +56,10 @@ var xxx = someValue // list would be changed -> pass value via reference, be cau
 
 
 ### TODO
+
+Bugfix:
+
+UTC and local time for chart refresh.
 
 Settimeout not function in ionic/cordova => need to be solved.
 
