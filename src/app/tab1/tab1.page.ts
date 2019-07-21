@@ -111,7 +111,7 @@ export class Tab1Page {
     // TODO get the data from storage
     console.log('Start up');
     // Refresh today display
-    this.calculateEachDayDisplay(this.ts.getTimestampToday() - 86400);
+    this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
 
   drop(event: CdkDragDrop<string[]>) {
