@@ -16,8 +16,8 @@ cd TimeController
 ionic serve
 ionic cordova build android --prod --release
 keytool -genkey -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-alias
-C:\Program Files\Java\jdk1.8.0_211\bin\jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks C:\WorkPlace\Github\WorkRep\TimeController\platforms\android\app\build\outputs\apk\release\app-release-unsigned.apk my-alias
-C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\zipalign -v 4 C:\WorkPlace\Github\WorkRep\TimeController\platforms\android\app\build\outputs\apk\release\app-release-unsigned.apk HelloWorldFromKeikai.apk
+C:\'Program Files'\Java\jdk1.8.0_211\bin\jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks app-release-unsigned.apk my-alias
+C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\zipalign -v 4 app-release-unsigned.apk HelloWorldFromKeikai.apk
 C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\apksigner verify HelloWorldFromKeikai.apk
 ```
 
@@ -64,8 +64,10 @@ var xxx = someValue // list would be changed -> pass value via reference, be cau
 
   2.[Could not find the implementation for builder @angular-devkit/build-angular](https://thecodebuzz.com/resolved-could-not-find-the-implementation-for-builder-angular-devkit-build-angularbrowser/)
 
+  3.[Could not find the implementation for builder @ionic/angular-toolkit:cordova-build](https://github.com/ionic-team/ionic/issues/18431)
+
 ```shell
-npm i –save-dev @angular-devkit/build-angular@latest
+npm i @angular-devkit/build-angular @angular-devkit/architect@latest @angular-devkit/core@latest @angular-devkit/schematics@latest
 ```
 
 ### TODO
@@ -74,11 +76,27 @@ npm i –save-dev @angular-devkit/build-angular@latest
 
    1.UTC and local time for chart refresh.
 
-   2.Settimeout not function in ionic/cordova.
+   2.Settimeout unfunction in ionic/cordova.
+
+   3.Drag & drop unfunction.
+
+   4.ColorSelector positon offset.
+
+   5.HuaweiP20Pro button size display different with local serve. 
 
 - [Chart given length labels and calibrations](https://canvasjs.com/javascript-charts/json-data-api-ajax-chart/)
 
 - [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
+
+- Local storage in phone.
+
+- Adjust html template.
+
+- Pointer on chart and changeable.
+
+- Multi days data charts.
+
+- Statistic data charts.
 
 
 
