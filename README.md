@@ -8,7 +8,7 @@ Build app from Ionic / Angular / Bootstrap.
 
 Install, serve and package
 
-npm, Ionic, Cordova, Angualr, Android Studio, Android SDK
+npm, Ionic, Cordova, Angular, Android Studio, Android SDK
 
 ```shell
 npm install -g ionic cordova
@@ -44,8 +44,8 @@ Obj.reduce((prev, curr) => prev.id < curr.id ? prev : curr).id;
 
  - Bugfix:
 ```javascript
-var xxx = list.filter(...)[index].someLabel,
-var xxx = someValue // list would be changed -> pass value via reference, be cautious
+let xxx = list.filter(...)[index].someLabel,
+let xxx = someValue // list would be changed -> pass value via reference, be cautious
 ```
 
 ### 20190722 Scroll bar, clock time, html adjust, Angular update
@@ -56,9 +56,9 @@ var xxx = someValue // list would be changed -> pass value via reference, be cau
 
 - [Display a clock](https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock)
 
-- [Drag and drop](https://material.angular.io/cdk/drag-drop/overview)
+- [Drag and drop](https://material.angular.io/cdk/drag-drop/overview) => maybe not working in Ionic, handle it later
 
-- Problems during Angular CLI / Material Update
+- Problems during version update of Angular 0.7.3->8.1.2 / Ionic 4->5
 
   1.[Module not found => restart VScode](https://stackoverflow.com/questions/38900357/no-exported-member-node-modules)
 
@@ -70,29 +70,52 @@ var xxx = someValue // list would be changed -> pass value via reference, be cau
 npm i @angular-devkit/build-angular @angular-devkit/architect@latest @angular-devkit/core@latest @angular-devkit/schematics@latest
 ```
 
-### TODO
+### 20190724 Bugfix, map scales, adjust template
 
 - Bugfix:
 
-   1.UTC and local time for chart refresh.
+UTC and local time.
 
-   2.Settimeout unfunction in ionic/cordova.
+```javascript
+dateObj.getMonth() // Local
+dateObj.getUTCMonth() // UTC
+```
 
-   3.Drag & drop unfunction.
+Timer in Ionic.
 
-   4.ColorSelector positon offset.
+```javascript
+setTimeout(() => {...}, 500); // NG
+setInterval(() => {...}, 500); // OK
+```
 
-   5.HuaweiP20Pro button size display different with local serve. 
+- PS drawing scales and arrange the template
+```shell
+ctrl + J
+ctrl + T
+move
+ctrl + shift + alt + T
+```
 
-- [Chart given length labels and calibrations](https://canvasjs.com/javascript-charts/json-data-api-ajax-chart/)
+### TODO
 
-- [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
+
+- Pointer on chart and changeable
+
+[ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
+
+[mat-slider](https://material.angular.io/components/slider/overview)
 
 - Local storage in phone.
 
-- Adjust html template.
+[Ionic storage](https://ionicframework.com/docs/building/storage)
 
-- Pointer on chart and changeable.
+[Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
+
+- Bugfix: ColorSelector positon offset.
+
+- [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
+
+- [Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
 - Multi days data charts.
 

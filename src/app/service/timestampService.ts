@@ -16,6 +16,7 @@ export class TimestampService {
         return Math.floor(dateTodayObj.getTime() / 1000);
     }
 
+    // Splice local time to string in seconds
     showTimeInSeconds(htmlElementId: string) {
         const timeToday = new Date();
         const h = timeToday.getHours();

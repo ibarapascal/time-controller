@@ -7,16 +7,23 @@ button.customX{
   width: 20%;
 }
 div.chartDiv{
-  width:55%;
+  width:45%;
   height:100%;
   border:1px solid;
   background-color:gainsboro;
   float:left;
 }
 div.calibrationDiv{
-  width:45%;
+  width:30%;
   height:100%;
   border:1px solid;
   background-color:gainsboro;
   display:inline-block;
+}
+div.dragLabelDiv{
+  width:25%;
+  height:100%;
+  border:1px solid;
+  background-color:gainsboro;
+  float:right;
 }

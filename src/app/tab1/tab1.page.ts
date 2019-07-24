@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-tab1',
@@ -11,27 +10,35 @@ export class Tab1Page {
   constructor(
     private ts: TimestampService
     ) {
-      // Unfuntion in ionic/cordova
-      setTimeout(() => {
+      // Refresh local time in seconds every 0.5s
+      setInterval(() => {
         this.ts.showTimeInSeconds('timeNow');
-      }, 1000);
+      }, 500);
+      // Refresh today display every 1min
+      setInterval(() => {
+        this.calculateEachDayDisplay(this.ts.getTimestampToday());
+      }, 60000);
   }
+
+  // current selected label
+  currentSelectedLabel = '';
+  // Edit label flag
+  labelEditable = 0;
+  // display id and timestamp list
+  displayList = [];
+  // length
+  lengthDisplayOneDay = 600;
 
   // Variables only used in pages.
   // Added label name
   labelAdded = '';
   // Added label color
   colorAdded = '';
+  // length of padding offset
+  lthDisPadding = this.lengthDisplayOneDay / 48;
+  // length full
+  lthDisFull = this.lengthDisplayOneDay * 25 / 24;
 
-  // current selected label
-  currentSelectedLabel = '';
-  // length
-  // TODO need correction
-  lengthDisplayOneDay = 600;
-  // Edit label flag
-  labelEditable = 0;
-  // display id and timestamp list
-  displayList = [];
   // Fake data
   storage = {
     setting: [{
@@ -112,10 +119,6 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
-  }
-
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.storage.setting, event.previousIndex, event.currentIndex);
   }
 
   // Add record
@@ -245,7 +248,9 @@ export class Tab1Page {
       const timeEnd: number = i === recordCal.length - 1 ? timeStopCal : recordCal[i + 1].timestamp;
       resultList.push({
         // TODO Attention result 0 posibility, check if affected in HTML
-        length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
+        // Giving more precious calculate results than Math.floor
+        // length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
+        length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay).toFixed(2)),
         label: recordCal[i].label,
         color: recordCal[i].color,
         timestamp: timeDayStart,
