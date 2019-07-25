@@ -121,8 +121,6 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 
     3. 1s match when dragging to the bottom.
 
-    4. Two same positions insert giving height -0.01.
-
 - Local storage in the phone.
 
 [Ionic storage](https://ionicframework.com/docs/building/storage)

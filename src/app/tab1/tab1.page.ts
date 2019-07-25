@@ -154,13 +154,14 @@ export class Tab1Page {
   }
 
   // Add record
-  // TODO to ensure that user must click once within two seconds, or only use the lastest input
-  //    to keep the uniqueness of data recorded in timestamp
-  //    used in other event (maybe)
   onLabelClick(labelSelected: string) {
     // Same with current label, do noting
     if (this.labelLast === labelSelected) {
       // TODO alert: Current event is the same with button clicked.
+      return;
+    }
+    if (this.timeSet === this.storage.record[this.storage.record.length - 1].timestamp) {
+      // TODO alert: Multiple labels at the same time.
       return;
     }
     // Add
