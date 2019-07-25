@@ -7,13 +7,98 @@ import { TimestampService } from '../service/timestampService';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+
+    // Fake data
+    storage = {
+      setting: [{
+        label: 'work',
+        color: '#FF0000',
+      }, {
+        label: 'study',
+        color: 'blue',
+      }, {
+        label: 'others',
+        color: 'gold',
+      }, {
+        label: 'game',
+        color: 'green',
+      }, {
+        label: 'sleep',
+        color: 'black',
+      }],
+      defaultSetting: [{
+        label: 'work',
+        color: '#FF0000',
+      }, {
+        label: 'study',
+        color: 'blue',
+      }, {
+        label: 'others',
+        color: 'gold',
+      }, {
+        label: 'game',
+        color: 'green',
+      }, {
+        label: 'sleep',
+        color: 'black',
+      }],
+      record: [{
+        id: 0,
+        timestamp: 0,
+        label: 'default',
+        color: 'gray',
+      }, {
+        id: 1,
+        timestamp: this.ts.getTimestampToday() - 11000,
+        label: 'game',
+        color: 'green',
+      }, {
+        id: 2,
+        timestamp: this.ts.getTimestampToday() - 1000,
+        label: 'work',
+        color: '#FF0000',
+      }, {
+        id: 3,
+        timestamp: this.ts.getTimestampToday() + 1000,
+        label: 'study',
+        color: 'blue',
+      }, {
+        id: 4,
+        timestamp: this.ts.getTimestampToday() + 2000,
+        label: 'others',
+        color: 'gold',
+      }, {
+        id: 5,
+        timestamp: this.ts.getTimestampToday() + 4000,
+        label: 'game',
+        color: 'green',
+      }, {
+        id: 6,
+        timestamp: this.ts.getTimestampToday() + 8000,
+        label: 'sleep',
+        color: 'black',
+      }],
+      displayRecordIdList: [],
+      editcache: [],
+    };
+
   constructor(
     private ts: TimestampService
     ) {
-      // Refresh local time in seconds every 0.5s
+      // Refresh
       setInterval(() => {
+        // Title local time in seconds every 0.5s
         this.ts.showTimeInSeconds('timeNow');
-        this.lthDisPercent = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+
+        // Range start and end proportion
+        this.propRngStart = (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400;
+        this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+
+        // Synchronize the cursor in range if not in editing
+        if (!this.recordRngEditingFlg) {
+          this.lengthTimeSetPosition = this.propRngEnd * this.lengthRngStandard;
+          this.timeSet = this.ts.getTimestampNow();
+        }
       }, 500);
       // Refresh today display every 1min
       setInterval(() => {
@@ -21,108 +106,38 @@ export class Tab1Page {
       }, 60000);
   }
 
-  // current selected label
-  currentSelectedLabel = '';
+  // label last
+  labelLast = this.storage.record[this.storage.record.length - 1].label;
   // Edit label flag
-  labelEditable = 0;
-  // Edit record flag
-  recordEditable = 0;
+  labelEditingFlg = 0;
+  // Edit range flag
+  recordRngEditingFlg = 0;
   // display id and timestamp list
   displayList = [];
-  // length
-  lengthDisplayOneDay = 600;
-  // value set from range
-  lengthTimeSetPosition = 0;
-  // time set from range
-  timeSet = 0;
 
-  // Variables only used in pages.
+  // range length
+  lengthRngStandard = 600;
+  // range start proportion
+  propRngStart = (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400;
+  // range end proportion
+  propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+  // range cursor proportion
+  propRngCursor = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+  // range cursor height value
+  lengthTimeSetPosition = this.propRngCursor * this.lengthRngStandard;
+  // range cursor time set by value
+  timeSet = this.ts.getTimestampNow();
+
   // Added label name
   labelAdded = '';
   // Added label color
   colorAdded = '';
   // length of padding offset of div
-  lthDisPaddingA = this.lengthDisplayOneDay / 48;
+  lengthRngPaddingA = this.lengthRngStandard / 48;
   // length of padding offset of input range
-  lthDisPaddingB = this.lengthDisplayOneDay / 96;
+  lengthRngPaddingB = this.lengthRngStandard / 96;
   // length full
-  lthDisFull = this.lengthDisplayOneDay * 25 / 24;
-  // display height percent
-  lthDisPercent = 0;
-
-  // Fake data
-  storage = {
-    setting: [{
-      label: 'work',
-      color: '#FF0000',
-    }, {
-      label: 'study',
-      color: 'blue',
-    }, {
-      label: 'others',
-      color: 'gold',
-    }, {
-      label: 'game',
-      color: 'green',
-    }, {
-      label: 'sleep',
-      color: 'black',
-    }],
-    defaultSetting: [{
-      label: 'work',
-      color: '#FF0000',
-    }, {
-      label: 'study',
-      color: 'blue',
-    }, {
-      label: 'others',
-      color: 'gold',
-    }, {
-      label: 'game',
-      color: 'green',
-    }, {
-      label: 'sleep',
-      color: 'black',
-    }],
-    record: [{
-      id: 0,
-      timestamp: 0,
-      label: 'default',
-      color: 'gray',
-    }, {
-      id: 1,
-      timestamp: this.ts.getTimestampToday() - 11000,
-      label: 'game',
-      color: 'green',
-    }, {
-      id: 2,
-      timestamp: this.ts.getTimestampToday() - 1000,
-      label: 'work',
-      color: '#FF0000',
-    }, {
-      id: 3,
-      timestamp: this.ts.getTimestampToday() + 1000,
-      label: 'study',
-      color: 'blue',
-    }, {
-      id: 4,
-      timestamp: this.ts.getTimestampToday() + 2000,
-      label: 'others',
-      color: 'gold',
-    }, {
-      id: 5,
-      timestamp: this.ts.getTimestampToday() + 4000,
-      label: 'game',
-      color: 'green',
-    }, {
-      id: 6,
-      timestamp: this.ts.getTimestampToday() + 8000,
-      label: 'sleep',
-      color: 'black',
-    }],
-    displayRecordIdList: [],
-    editcache: [],
-  };
+  lengthRngFull = this.lengthRngStandard * 25 / 24;
 
   // tslint:disable-next-line: use-life-cycle-interface
   ngOnInit() {
@@ -130,18 +145,12 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
-    this.lthDisPercent = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
     // Get the setted time from record edit input
-    document.getElementById('rangeTime').addEventListener('change', () => {
-      console.log('valueChanged');
-    });
     document.getElementById('rangeTime').addEventListener('input', () => {
-      // this.timeSet = this.ts.getTimestampToday() + Math.floor(this.lengthTimeSetPosition / this.lengthDisplayOneDay * 86400);
-      // console.log(this.timeSet);
-      console.log('valueChanging');
+      this.timeSet = this.ts.getTimestampToday() + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
+      this.recordRngEditingFlg = this.timeSet !== this.ts.getTimestampNow() ? 1 : 0;
     });
   }
-
 
   // Add record
   // TODO to ensure that user must click once within two seconds, or only use the lastest input
@@ -149,7 +158,7 @@ export class Tab1Page {
   //    used in other event (maybe)
   onLabelClick(labelSelected: string) {
     // Same with current label, do noting
-    if (this.currentSelectedLabel === labelSelected) {
+    if (this.labelLast === labelSelected) {
       // TODO alert: Current event is the same with button clicked.
       return;
     }
@@ -158,12 +167,12 @@ export class Tab1Page {
       // At least one item of record existence promised
       // Record id well sorted and continuous promised
       id: this.storage.record.length,
-      timestamp: this.ts.getTimestampNow(),
+      timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
       label: labelSelected,
       color: this.storage.setting.filter(obj => obj.label === labelSelected)[0].color,
     });
-    // Record current label
-    this.currentSelectedLabel = labelSelected;
+    // Record label last (added)
+    this.labelLast = this.storage.record[this.storage.record.length - 1].label;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
@@ -181,8 +190,8 @@ export class Tab1Page {
         color: 'gray',
       });
     }
-    // Revert current label
-    this.currentSelectedLabel = this.storage.record[this.storage.record.length - 1].label;
+    // Revert label last
+    this.labelLast = this.storage.record[this.storage.record.length - 1].label;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
@@ -218,7 +227,7 @@ export class Tab1Page {
     this.labelAdded = '';
     // Reset input label color
     this.colorAdded = '';
-    this.labelEditable ? this.labelEditable = 0 : this.labelEditable = 1;
+    this.labelEditingFlg ? this.labelEditingFlg = 0 : this.labelEditingFlg = 1;
   }
 
   // Set label to default
@@ -271,8 +280,8 @@ export class Tab1Page {
       resultList.push({
         // TODO Attention result 0 posibility, check if affected in HTML
         // Giving more precious calculate results than Math.floor
-        // length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay),
-        length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthDisplayOneDay).toFixed(2)),
+        // length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthRngStandard),
+        length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthRngStandard).toFixed(2)),
         label: recordCal[i].label,
         color: recordCal[i].color,
         timestamp: timeDayStart,

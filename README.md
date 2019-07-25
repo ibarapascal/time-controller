@@ -1,8 +1,8 @@
 # Time Controller Application
 
-Build app from Ionic / Angular / Bootstrap.
+Build an app from Ionic / Angular / Bootstrap.
 
-## Time line
+## Timeline
 
 ### 20190715 Environment setting, serve, build, signature.
 
@@ -30,7 +30,7 @@ C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1
 Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/intro/deploying/)
 
 
-### 20190718 Data structure, static html, bootstrap, basic process
+### 20190718 Data structure, static HTML, bootstrap, the basic process
 
 - [Import bootstrap to ionic 4 app](https://stackoverflow.com/questions/53063005/how-can-i-add-and-use-bootstrap-to-an-ionic-4-app)
 
@@ -49,9 +49,9 @@ let xxx = list.filter(...)[index].someLabel,
 let xxx = someValue // list would be changed -> pass value via reference, be cautious
 ```
 
-### 20190722 Scroll bar, clock time, html adjust, Angular update
+### 20190722 Scroll bar, clock time, Html adjust, Angular update
 
-- Adjust input color selection position.
+- Adjust the input color selection position.
 
 - [Ionic scroll bar](https://ionicframework.com/docs/api/content)
 
@@ -97,7 +97,7 @@ move
 ctrl + shift + alt + T
 ```
 
-### 20190725 Input range
+### 20190725 Input range, color display, variables rename
 
 - Refer
 
@@ -105,19 +105,35 @@ ctrl + shift + alt + T
 
 [mat-slider](https://material.angular.io/components/slider/overview)
 
+```javascript
+document.getElementById('rangeTime').addEventListener('change', () => {
+    console.log('valueChanged');
+});
+document.getElementById('rangeTime').addEventListener('input', () => {
+    console.log('valueChanging');
+});
+```
 
 ### TODO
 
 
-- Input range event
+- Bugfix
 
-- Local storage in phone.
+    1. Revert to zero in one day.
+
+    2. Offset of the cursor after insert multi labels.
+
+    3. 1s match when dragging to the bottom.
+
+    4. Two same positions insert giving height -0.01.
+
+- Local storage in the phone.
 
 [Ionic storage](https://ionicframework.com/docs/building/storage)
 
 [Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
 
-- Bugfix: ColorSelector positon offset.
+- Bugfix: ColorSelector position offset.
 
 - [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 

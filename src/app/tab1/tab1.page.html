@@ -12,8 +12,8 @@
             <button type="button" class="btn btn-primary customLabel"
               style="background-color:gray;"
               (click)="onLabelEdit()">
-              <div *ngIf="!labelEditable">Edit</div>
-              <div *ngIf="labelEditable">Return</div>
+              <div *ngIf="!labelEditingFlg">Edit</div>
+              <div *ngIf="labelEditingFlg">Return</div>
             </button>
           </div>
         </th>
@@ -25,35 +25,36 @@
         <td style="border:1px solid; width:66.6%;">
           <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
-              [style.height]="lthDisFull + 2 + 'px'"
-              [style.padding-top]="lthDisPaddingA + 'px'"
-              [style.padding-bottom]="lthDisPaddingA + 'px'">
+              [style.height]="lengthRngFull + 2 + 'px'"
+              [style.padding-top]="lengthRngPaddingA + 'px'"
+              [style.padding-bottom]="lengthRngPaddingA + 'px'">
             <div *ngFor="let item of displayList"
                 [style.backgroundColor]="item.color"
                 [style.height]="item.length + 'px'">
             </div>
           </div>
           <div class="calibrationDiv">
-            <img src="../../assets/img/scaleWithNumber3000-600-625.jpg" alt="scale image" [height]="lthDisFull">
+            <img src="../../assets/img/scaleWithNumber3000-600-625.jpg" alt="scale image" [height]="lengthRngFull">
           </div>
           <div class="dragLabelDiv"
-              [style.height]="lthDisFull + 2 + 'px'"
-              [style.padding-top]="lthDisPaddingB + 'px'"
-              [style.padding-bottom]="lthDisPaddingB + 'px'">
+              [style.height]="lengthRngFull + 2 + 'px'"
+              [style.padding-top]="lengthRngPaddingB + 'px'"
+              [style.padding-bottom]="lengthRngPaddingB + 'px'">
             <input type="range"
                    id="rangeTime"
                    class="range"
-                   [min]="0"
-                   [max]="lthDisPercent * lengthDisplayOneDay"
+                   [style.margin-top]=" propRngStart * lengthRngFull + 'px'"
+                   [min]="propRngStart * lengthRngStandard"
+                   [max]="propRngEnd * lengthRngStandard"
                    step="any"
-                   [style.height]="lthDisPercent * 100 + '%'"
+                   [style.height]="(propRngEnd - propRngStart) * 100 + '%'"
                    [(ngModel)]="lengthTimeSetPosition">
           </div>
         </td>
   
         <td align="center">
           <div *ngIf="storage.setting.length">
-            <div *ngIf="labelEditable" style="margin-bottom:10px">
+            <div *ngIf="labelEditingFlg" style="margin-bottom:10px">
               <button type="button" class="btn btn-primary customLabel"
                 style="background-color:gray;"
                 (click)="onLabelDefault()">
@@ -64,17 +65,17 @@
             <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
               <button type="button" class="btn btn-primary customLabel"
                 [style.background-color]="item.color"
-                [style.width]="labelEditable ? '80%' : '100%'"
+                [style.width]="labelEditingFlg ? '80%' : '100%'"
                 (click)="onLabelClick(item.label)">
                 {{item.label}}
               </button>
               <button type="button" class="btn btn-sm customX"
-                *ngIf="labelEditable"
+                *ngIf="labelEditingFlg"
                 (click)="onLabelDelete(item.label)">
                 X
               </button>
             </div>
-            <div *ngIf="labelEditable">
+            <div *ngIf="labelEditingFlg">
               <input [(colorPicker)]="colorAdded"
                 [style.background]="colorAdded"
                 placeholder="Label Name"
@@ -88,6 +89,13 @@
                 (click)="onLabelAdd(labelAdded, colorAdded)">
                 Add
               </button>
+            </div>
+            <!-- TEST -->
+            <div>
+              Time now: {{this.ts.getTimestampNow()}}
+            </div>
+            <div>
+              Time drag: {{this.timeSet}} 
             </div>
           </div>
   
