@@ -119,8 +119,6 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 
 - Bugfix
 
-    1. Revert to zero in one day.
-
     2. Offset of the cursor after insert multi labels.
 
     3. 1s match when dragging to the bottom.

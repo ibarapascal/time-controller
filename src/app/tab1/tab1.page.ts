@@ -91,7 +91,8 @@ export class Tab1Page {
         this.ts.showTimeInSeconds('timeNow');
 
         // Range start and end proportion
-        this.propRngStart = (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400;
+        this.propRngStart = this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
+          (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
         this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
 
         // Synchronize the cursor in range if not in editing
@@ -118,7 +119,7 @@ export class Tab1Page {
   // range length
   lengthRngStandard = 600;
   // range start proportion
-  propRngStart = (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400;
+  propRngStart = 0;
   // range end proportion
   propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
   // range cursor proportion
