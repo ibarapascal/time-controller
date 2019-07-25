@@ -13,6 +13,7 @@ export class Tab1Page {
       // Refresh local time in seconds every 0.5s
       setInterval(() => {
         this.ts.showTimeInSeconds('timeNow');
+        this.lthDisPercent = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
       }, 500);
       // Refresh today display every 1min
       setInterval(() => {
@@ -24,20 +25,30 @@ export class Tab1Page {
   currentSelectedLabel = '';
   // Edit label flag
   labelEditable = 0;
+  // Edit record flag
+  recordEditable = 0;
   // display id and timestamp list
   displayList = [];
   // length
   lengthDisplayOneDay = 600;
+  // value set from range
+  lengthTimeSetPosition = 0;
+  // time set from range
+  timeSet = 0;
 
   // Variables only used in pages.
   // Added label name
   labelAdded = '';
   // Added label color
   colorAdded = '';
-  // length of padding offset
-  lthDisPadding = this.lengthDisplayOneDay / 48;
+  // length of padding offset of div
+  lthDisPaddingA = this.lengthDisplayOneDay / 48;
+  // length of padding offset of input range
+  lthDisPaddingB = this.lengthDisplayOneDay / 96;
   // length full
   lthDisFull = this.lengthDisplayOneDay * 25 / 24;
+  // display height percent
+  lthDisPercent = 0;
 
   // Fake data
   storage = {
@@ -119,7 +130,18 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    this.lthDisPercent = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+    // Get the setted time from record edit input
+    document.getElementById('rangeTime').addEventListener('change', () => {
+      console.log('valueChanged');
+    });
+    document.getElementById('rangeTime').addEventListener('input', () => {
+      // this.timeSet = this.ts.getTimestampToday() + Math.floor(this.lengthTimeSetPosition / this.lengthDisplayOneDay * 86400);
+      // console.log(this.timeSet);
+      console.log('valueChanging');
+    });
   }
+
 
   // Add record
   // TODO to ensure that user must click once within two seconds, or only use the lastest input
@@ -219,7 +241,7 @@ export class Tab1Page {
     let timeStopCal: number;
     const timeDayStart: number = calDayTimestamp;
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
-    const resultList: {length: number, label: string, color: string, timestamp: number, localId: number, id: number}[] = [];
+    const resultList: {length: number, label: string, color: string, timestamp: number, id: number}[] = [];
     // Get record data via timestamp in range of today [)
     const recordCal = Object.create(this.storage.record.filter(obj => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd));
 
@@ -254,7 +276,6 @@ export class Tab1Page {
         label: recordCal[i].label,
         color: recordCal[i].color,
         timestamp: timeDayStart,
-        localId: i,
         id: recordCal[i].id,
       });
     }

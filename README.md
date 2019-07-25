@@ -97,14 +97,19 @@ move
 ctrl + shift + alt + T
 ```
 
-### TODO
+### 20190725 Input range
 
-
-- Pointer on chart and changeable
+- Refer
 
 [ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
 
 [mat-slider](https://material.angular.io/components/slider/overview)
+
+
+### TODO
+
+
+- Input range event
 
 - Local storage in phone.
 

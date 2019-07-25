@@ -26,8 +26,8 @@
           <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
               [style.height]="lthDisFull + 2 + 'px'"
-              [style.padding-top]="lthDisPadding + 'px'"
-              [style.padding-bottom]="lthDisPadding + 'px'">
+              [style.padding-top]="lthDisPaddingA + 'px'"
+              [style.padding-bottom]="lthDisPaddingA + 'px'">
             <div *ngFor="let item of displayList"
                 [style.backgroundColor]="item.color"
                 [style.height]="item.length + 'px'">
@@ -36,10 +36,18 @@
           <div class="calibrationDiv">
             <img src="../../assets/img/scaleWithNumber3000-600-625.jpg" alt="scale image" [height]="lthDisFull">
           </div>
-          <div class="dragLabelDiv">
-            <div [style.height]="lthDisFull + 'px'">
-              <p>TODO: Slider input button here</p>
-            </div>
+          <div class="dragLabelDiv"
+              [style.height]="lthDisFull + 2 + 'px'"
+              [style.padding-top]="lthDisPaddingB + 'px'"
+              [style.padding-bottom]="lthDisPaddingB + 'px'">
+            <input type="range"
+                   id="rangeTime"
+                   class="range"
+                   [min]="0"
+                   [max]="lthDisPercent * lengthDisplayOneDay"
+                   step="any"
+                   [style.height]="lthDisPercent * 100 + '%'"
+                   [(ngModel)]="lengthTimeSetPosition">
           </div>
         </td>
   
