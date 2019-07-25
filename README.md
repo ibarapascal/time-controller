@@ -97,7 +97,7 @@ move
 ctrl + shift + alt + T
 ```
 
-### 20190725 Input range, color display, variables rename
+### 20190725 Input range, color display, variables rename, bug fix
 
 - Refer
 
@@ -119,7 +119,7 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 
 - Bugfix
 
-    3. 1s match when dragging to the bottom.
+    1. 1s match when dragging to the bottom.
 
 - Local storage in the phone.
 
