@@ -43,11 +43,11 @@
             <input type="range"
                    id="rangeTime"
                    class="range"
-                   [style.margin-top]=" propRngStart * lengthRngFull + 'px'"
+                   [style.margin-top]=" propRngStart * lengthRngStandard + 'px'"
                    [min]="propRngStart * lengthRngStandard"
                    [max]="propRngEnd * lengthRngStandard"
                    step="any"
-                   [style.height]="(propRngEnd - propRngStart) * 100 + '%'"
+                   [style.height]="(propRngEnd - propRngStart) * lengthRngStandard + lengthRngPaddingB * 2 + 'px'"
                    [(ngModel)]="lengthTimeSetPosition">
           </div>
         </td>

@@ -119,8 +119,6 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 
 - Bugfix
 
-    2. Offset of the cursor after insert multi labels.
-
     3. 1s match when dragging to the bottom.
 
     4. Two same positions insert giving height -0.01.
