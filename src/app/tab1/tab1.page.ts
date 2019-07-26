@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
+import { ColorService } from '../service/colorService';
 
 @Component({
   selector: 'app-tab1',
@@ -83,7 +84,8 @@ export class Tab1Page {
     };
 
   constructor(
-    private ts: TimestampService
+    private ts: TimestampService,
+    private color: ColorService,
     ) {
       // Refresh every 0.5s
       setInterval(() => {
@@ -193,6 +195,7 @@ export class Tab1Page {
         id: 0,
         timestamp: 0,
         label: 'default',
+        // TODO change to #XXXXXX
         color: 'gray',
       });
     }

@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { TimestampService } from './service/timestampService';
+import { ColorService } from './service/colorService';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { TimestampService } from './service/timestampService';
     StatusBar,
     SplashScreen,
     TimestampService,
+    ColorService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

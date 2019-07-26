@@ -34,7 +34,7 @@ Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/int
 
 - [Import bootstrap to ionic 4 app](https://stackoverflow.com/questions/53063005/how-can-i-add-and-use-bootstrap-to-an-ionic-4-app)
 
-- [Color Picker](https://www.npmjs.com/package/ngx-color-picker)
+- [Color Picker](https://www.npmjs.com/package/ngx-color-picker) => don't have a very well performance, handle it later
 
 - Feature:
 ```javascript
@@ -61,11 +61,11 @@ let xxx = someValue // list would be changed -> pass value via reference, be cau
 
 - Problems during version update of Angular 0.7.3->8.1.2 / Ionic 4->5
 
-  1.[Module not found => restart VScode](https://stackoverflow.com/questions/38900357/no-exported-member-node-modules)
+  [1.Module not found => restart VScode](https://stackoverflow.com/questions/38900357/no-exported-member-node-modules)
 
-  2.[Could not find the implementation for builder @angular-devkit/build-angular](https://thecodebuzz.com/resolved-could-not-find-the-implementation-for-builder-angular-devkit-build-angularbrowser/)
+  [2.Could not find the implementation for builder @angular-devkit/build-angular](https://thecodebuzz.com/resolved-could-not-find-the-implementation-for-builder-angular-devkit-build-angularbrowser/)
 
-  3.[Could not find the implementation for builder @ionic/angular-toolkit:cordova-build](https://github.com/ionic-team/ionic/issues/18431)
+  [3.Could not find the implementation for builder @ionic/angular-toolkit:cordova-build](https://github.com/ionic-team/ionic/issues/18431)
 
 ```shell
 npm i @angular-devkit/build-angular @angular-devkit/architect@latest @angular-devkit/core@latest @angular-devkit/schematics@latest
@@ -95,24 +95,22 @@ move
 ctrl + shift + alt + T
 ```
 
-### 20190725 Input range, color display, variables rename, bug fix
+### 20190725 Input range, range display, variables rename, bug fix
 
-- [Slider: ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
+- Some slider (input range) tools
 
-- [Slider: mat-slider](https://material.angular.io/components/slider/overview)
+  [1.Angular: ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
+  
+  [2.Angular: mat-slider](https://material.angular.io/components/slider/overview)
 
 - EventListener
 
 ```javascript
-document.getElementById('rangeTime').addEventListener('change', () => {
-    console.log('valueChanged');
-});
-document.getElementById('rangeTime').addEventListener('input', () => {
-    console.log('valueChanging');
-});
+document.getElementById('rangeTime').addEventListener('change', () => { //console.log('valueChanged');
+document.getElementById('rangeTime').addEventListener('input', () => { //console.log('valueChanging');
 ```
 
-### 20190726 Drag time display in real time
+### 20190726 Drag time display in real time, color trans, font color, color picker
 
 - [Reference position div](https://disenowebakus.net/en/position-div-css)
 
@@ -120,34 +118,39 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 
 - [Timestamp to date](https://www.typescriptlang.org/docs/handbook/functions.html)
 
-```css
-div.father{
-  position: relative;
-}
-div.son{
-  position: absolute;
-}
-```
+- [Color in definition](https://www.w3schools.com/html/html_colors.asp)
 
+- [HEX->RGB RGB->HEX](https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb)
 
-### TODO
+- [Font black or white changing with background-color](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 
+- Some color picker tools
+   
+   [1.Angular: ngx-color-picker](https://www.npmjs.com/package/ngx-color-picker)
+   
+   [2.Angular: simple-angular-color-picker](https://github.com/speedfl/simple-angular-color-picker)
 
-- Bugfix: 1s match when dragging to the bottom.
+   [3.Ionic: RGB color picker](http://inmagik.github.io/ionic-color-picker/)
 
-- Local storage in the phone.
+### DOING
 
-[Ionic storage](https://ionicframework.com/docs/building/storage)
-
-[Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
+- [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
 
 - Bugfix: ColorSelector position offset.
 
-- [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
+### TODO
+
+- Local storage in the phone.
+
+  [1.Ionic storage](https://ionicframework.com/docs/building/storage)
+
+  [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
 
 - [Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
 - Multi days data charts.
+
+- Bugfix: 1s match when dragging to the bottom.
 
 - Statistic data charts.
 
