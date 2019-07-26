@@ -49,6 +49,11 @@
                    step="any"
                    [style.height]="(propRngEnd - propRngStart) * lengthRngStandard + lengthRngPaddingB * 2 + 'px'"
                    [(ngModel)]="lengthTimeSetPosition">
+            <div class="absoluteDiv"
+                id="timeDrag"
+                [style.top]="lengthTimeSetPosition + 'px'"
+                [style.left]="'-65px'">
+            </div>
           </div>
         </td>
   

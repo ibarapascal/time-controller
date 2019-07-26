@@ -1,33 +1,37 @@
 button.customLabel{
   width: 100%;
   border: none;
-  display:inline-block;
+  display: inline-block;
 }
 button.customX{
   width: 20%;
 }
 div.chartDiv{
-  width:45%;
-  height:100%;
-  border:1px solid;
-  background-color:gainsboro;
-  float:left;
+  width: 45%;
+  height: 100%;
+  border: 1px solid;
+  background-color: gainsboro;
+  float: left;
 }
 div.calibrationDiv{
-  width:30%;
-  height:100%;
-  border:1px solid;
-  background-color:gainsboro;
-  display:inline-block;
+  width: 30%;
+  height: 100%;
+  border: 1px solid;
+  background-color: gainsboro;
+  display: inline-block;
 }
 div.dragLabelDiv{
-  width:25%;
-  height:100%;
-  border:1px solid;
-  background-color:white;
-  float:right;
+  width: 25%;
+  height: 100%;
+  border: 1px solid;
+  background-color: white;
+  float: right;
+  position: relative;
 }
-
+div.absoluteDiv{
+  position: absolute;
+  white-space: nowrap;
+}
 input.range{
   width: 30px;
   -webkit-appearance: slider-vertical;

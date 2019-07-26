@@ -85,24 +85,25 @@ export class Tab1Page {
   constructor(
     private ts: TimestampService
     ) {
-      // Refresh
+      // Refresh every 0.5s
       setInterval(() => {
-        // Title local time in seconds every 0.5s
-        this.ts.showTimeInSeconds('timeNow');
-
-        // Range start and end proportion
-        this.propRngStart = this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
-          (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
-        this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
-
         // Synchronize the cursor in range if not in editing
         if (!this.recordRngEditingFlg) {
           this.lengthTimeSetPosition = this.propRngEnd * this.lengthRngStandard;
           this.timeSet = this.ts.getTimestampNow();
         }
+        // Show title local time in seconds
+        this.ts.showTimeInSeconds('timeNow');
+        // Show drag range time in seconds
+        this.ts.showTimeInSeconds('timeDrag', this.timeSet);
+        // Range start and end proportion
+        this.propRngStart = this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
+          (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
+        this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
       }, 500);
-      // Refresh today display every 1min
+      // Refresh every minute
       setInterval(() => {
+        // Show record display
         this.calculateEachDayDisplay(this.ts.getTimestampToday());
       }, 60000);
   }
@@ -146,10 +147,13 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
-    // Get the setted time from record edit input
+    // Response the range changing
     document.getElementById('rangeTime').addEventListener('input', () => {
+      // Get the setted time from record edit input
       this.timeSet = this.ts.getTimestampToday() + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
       this.recordRngEditingFlg = this.timeSet !== this.ts.getTimestampNow() ? 1 : 0;
+      // Show drag range time in seconds
+      this.ts.showTimeInSeconds('timeDrag', this.timeSet);
     });
   }
 

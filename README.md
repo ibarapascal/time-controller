@@ -73,23 +73,21 @@ npm i @angular-devkit/build-angular @angular-devkit/architect@latest @angular-de
 
 ### 20190724 Bugfix, map scales, adjust template
 
-- Bugfix:
-
-UTC and local time.
+- get UTC and local time.
 
 ```javascript
 dateObj.getMonth() // Local
 dateObj.getUTCMonth() // UTC
 ```
 
-Timer in Ionic.
+- Set loop timer in Ionic.
 
 ```javascript
 setTimeout(() => {...}, 500); // NG
 setInterval(() => {...}, 500); // OK
 ```
 
-- PS drawing scales and arrange the template
+- PS drawing scales and arrange the template steps & hot keys
 ```shell
 ctrl + J
 ctrl + T
@@ -99,11 +97,11 @@ ctrl + shift + alt + T
 
 ### 20190725 Input range, color display, variables rename, bug fix
 
-- Refer
+- [Slider: ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
 
-[ignite-ui-angular](https://www.infragistics.com/products/ignite-ui-angular/angular/components/slider.html)
+- [Slider: mat-slider](https://material.angular.io/components/slider/overview)
 
-[mat-slider](https://material.angular.io/components/slider/overview)
+- EventListener
 
 ```javascript
 document.getElementById('rangeTime').addEventListener('change', () => {
@@ -114,12 +112,28 @@ document.getElementById('rangeTime').addEventListener('input', () => {
 });
 ```
 
+### 20190726 Drag time display in real time
+
+- [Reference position div](https://disenowebakus.net/en/position-div-css)
+
+- [Allow text to spill outside div](https://stackoverflow.com/questions/19302419/how-to-allow-text-to-spill-outside-div)
+
+- [Timestamp to date](https://www.typescriptlang.org/docs/handbook/functions.html)
+
+```css
+div.father{
+  position: relative;
+}
+div.son{
+  position: absolute;
+}
+```
+
+
 ### TODO
 
 
-- Bugfix
-
-    1. 1s match when dragging to the bottom.
+- Bugfix: 1s match when dragging to the bottom.
 
 - Local storage in the phone.
 

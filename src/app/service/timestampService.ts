@@ -17,11 +17,11 @@ export class TimestampService {
     }
 
     // Splice local time to string in seconds
-    showTimeInSeconds(htmlElementId: string) {
-        const timeToday = new Date();
-        const h = timeToday.getHours();
-        const mtemp = timeToday.getMinutes();
-        const stemp = timeToday.getSeconds();
+    showTimeInSeconds(htmlElementId: string, timestamp?: number) {
+        const time = timestamp ? new Date(timestamp * 1000) : new Date();
+        const h = time.getHours();
+        const mtemp = time.getMinutes();
+        const stemp = time.getSeconds();
         const m = mtemp < 10 ? '0' + mtemp.toString() : mtemp.toString();
         const s = stemp < 10 ? '0' + stemp.toString() : stemp.toString();
         document.getElementById(htmlElementId).innerHTML = h + ':' + m + ':' + s;
