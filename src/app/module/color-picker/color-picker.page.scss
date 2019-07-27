@@ -1,0 +1,27 @@
+ion-grid{
+    --ion-grid-padding: 6px;
+  }
+  
+  .noPadBottom{
+    margin-bottom: 0px;
+  }
+  .rowClass{
+    max-width: 320px;
+    min-height: 80px;
+    padding: 6px;
+  }
+  
+  .colClass{
+      border: 2px solid white;
+      text-align: center;
+      font-weight: bold;
+      padding: 12px;
+      transition: opacity, border 0.5s;
+    }
+    
+    .colClass:hover{
+      border: 1px solid black;
+      opacity: 0.9;
+      cursor: pointer;
+      transition: opacity, border 0.5s;
+    }

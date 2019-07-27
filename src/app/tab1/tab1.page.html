@@ -81,18 +81,15 @@
               </button>
             </div>
             <div *ngIf="labelEditingFlg">
-              <input [(colorPicker)]="colorAdded"
-                [style.background]="colorAdded"
-                placeholder="Label Name"
-                [(ngModel)]="labelAdded"
-                [cpWidth]="'200%'"
-                [cpPositionOffset]="'-200%'"
-                [cpPosition]="'bottom'"
-                style="width: 100%;"/>
-              <button type="button" class="btn btn-primary customLabel"
+              <input [style.background]="colorAdded"
+                     placeholder="Label Name"
+                     [(ngModel)]="labelAdded"
+                     style="width: 80%;"
+                     (focusout)="onColorPicking($event)">
+              <button type="button" class="btn btn-sm customX"
                 style="background-color:gray;"
                 (click)="onLabelAdd(labelAdded, colorAdded)">
-                Add
+                +
               </button>
             </div>
             <!-- TEST -->

@@ -132,13 +132,40 @@ document.getElementById('rangeTime').addEventListener('input', () => { //console
 
    [3.Ionic: RGB color picker](http://inmagik.github.io/ionic-color-picker/)
 
-### DOING
+### 20190727 Color picker page module
 
-- [Change the font color with background color changed](https://stackoverflow.com/questions/11867545/change-text-color-based-on-brightness-of-the-covered-background-area)
+- [Ionic generate command](https://ionicframework.com/docs/cli/commands/generate)
 
-- Bugfix: ColorSelector position offset.
+- [Module nav sample](https://stackblitz.com/edit/ionic-4-color-list)
+
+```javascript
+@NgModule({
+  entryComponents: [ColorPickerPage],
+  imports: [ColorPickerPageModule],
+  providers: [ColorPickerPage],
+})
+```
+```javascript
+// entryComponent
+this.XXXXX = this.navParams.get('setting');
+this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
+```
+```javascript
+// parentComponent
+  async onColorPicking(event: Event) {
+    const comp = await this.pop.create({
+      component: ColorPickerPage,
+      event,
+      componentProps: {setting: XXXXX,}
+    });
+    comp.onDidDismiss().then((data) => {YYYYY = data.data});
+    return await comp.present();
+  }
+```
 
 ### TODO
+
+- Template adjustment (font color, position, transparency)
 
 - Local storage in the phone.
 

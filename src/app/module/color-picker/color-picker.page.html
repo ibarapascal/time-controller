@@ -1,0 +1,9 @@
+<ion-list #theList inset="false" lines="full" class="noPadBottom">
+	<ion-grid>
+		<ion-row class="rowClass">
+			<ion-col size="2" class="colClass" *ngFor="let item of colorDefaultList; let idx=index" [style.background]="item"
+			 (click)="onSelectColor(idx)">
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-list>

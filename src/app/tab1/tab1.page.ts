@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
-import { ColorService } from '../service/colorService';
+import { PopoverController } from '@ionic/angular';
+import { ColorPickerPage } from '../module/color-picker/color-picker.page';
 
 @Component({
   selector: 'app-tab1',
@@ -13,71 +14,71 @@ export class Tab1Page {
     storage = {
       setting: [{
         label: 'work',
-        color: '#FF0000',
+        color: '#e45a33',
       }, {
         label: 'study',
-        color: 'blue',
+        color: '#fa761e',
       }, {
         label: 'others',
-        color: 'gold',
+        color: '#fde84e',
       }, {
         label: 'game',
-        color: 'green',
+        color: '#4488ff',
       }, {
         label: 'sleep',
-        color: 'black',
+        color: '#06394a',
       }],
       defaultSetting: [{
         label: 'work',
-        color: '#FF0000',
+        color: '#e45a33',
       }, {
         label: 'study',
-        color: 'blue',
+        color: '#fa761e',
       }, {
         label: 'others',
-        color: 'gold',
+        color: '#fde84e',
       }, {
         label: 'game',
-        color: 'green',
+        color: '#4488ff',
       }, {
         label: 'sleep',
-        color: 'black',
+        color: '#06394a',
       }],
       record: [{
         id: 0,
         timestamp: 0,
         label: 'default',
-        color: 'gray',
+        color: '#05d59e',
       }, {
         id: 1,
         timestamp: this.ts.getTimestampToday() - 11000,
         label: 'game',
-        color: 'green',
+        color: '#4488ff',
       }, {
         id: 2,
         timestamp: this.ts.getTimestampToday() - 1000,
         label: 'work',
-        color: '#FF0000',
+        color: '#e45a33',
       }, {
         id: 3,
         timestamp: this.ts.getTimestampToday() + 1000,
         label: 'study',
-        color: 'blue',
+        color: '#fa761e',
       }, {
         id: 4,
         timestamp: this.ts.getTimestampToday() + 2000,
         label: 'others',
-        color: 'gold',
+        color: '#fde84e',
       }, {
         id: 5,
         timestamp: this.ts.getTimestampToday() + 4000,
         label: 'game',
-        color: 'green',
+        color: '#4488ff',
       }, {
         id: 6,
         timestamp: this.ts.getTimestampToday() + 8000,
         label: 'sleep',
-        color: 'black',
+        color: '#06394a',
       }],
       displayRecordIdList: [],
       editcache: [],
@@ -85,7 +86,7 @@ export class Tab1Page {
 
   constructor(
     private ts: TimestampService,
-    private color: ColorService,
+    public pop: PopoverController,
     ) {
       // Refresh every 0.5s
       setInterval(() => {
@@ -159,6 +160,30 @@ export class Tab1Page {
     });
   }
 
+  // Pick label color from module
+  async onColorPicking(event: Event) {
+    // PopoverController, pop a component over layout
+    const colorComponent = await this.pop.create({
+      // component
+      component: ColorPickerPage,
+      // event
+      event,
+      // props
+      componentProps: {
+        setting: this.storage.setting,
+      }
+    });
+    // Define the dismiss event, catch the return data
+    colorComponent.onDidDismiss()
+        .then((data) => {
+          // Pass the color picked
+          this.colorAdded = data.data;
+      });
+    // show the component
+    return await colorComponent.present();
+  }
+
+
   // Add record
   onLabelClick(labelSelected: string) {
     // Same with current label, do noting
@@ -195,8 +220,7 @@ export class Tab1Page {
         id: 0,
         timestamp: 0,
         label: 'default',
-        // TODO change to #XXXXXX
-        color: 'gray',
+        color: '#05d59e',
       });
     }
     // Revert label last
@@ -219,6 +243,10 @@ export class Tab1Page {
     } else {
       this.storage.setting.push({label, color});
     }
+    // Reset input label name
+    this.labelAdded = '';
+    // Reset input label color
+    this.colorAdded = '';
   }
 
   // Remove label
@@ -232,11 +260,11 @@ export class Tab1Page {
 
   // Edit label
   onLabelEdit() {
+    this.labelEditingFlg ? this.labelEditingFlg = 0 : this.labelEditingFlg = 1;
     // Reset input label name
     this.labelAdded = '';
     // Reset input label color
     this.colorAdded = '';
-    this.labelEditingFlg ? this.labelEditingFlg = 0 : this.labelEditingFlg = 1;
   }
 
   // Set label to default

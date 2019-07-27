@@ -12,15 +12,19 @@ import { AppComponent } from './app.component';
 import { TimestampService } from './service/timestampService';
 import { ColorService } from './service/colorService';
 
+import { ColorPickerPage } from './module/color-picker/color-picker.page';
+import { ColorPickerPageModule } from './module/color-picker/color-picker.module';
+
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  entryComponents: [ColorPickerPage],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ColorPickerPageModule],
   providers: [
     StatusBar,
     SplashScreen,
     TimestampService,
     ColorService,
+    ColorPickerPage,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

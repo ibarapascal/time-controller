@@ -25,4 +25,23 @@ export class ColorService {
         const calResult = Math.round((rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000);
         return calResult > 125 ? false : true;
     }
+
+    // Define a default light color list
+    getDefaultColorList(): string[] {
+        const colorList = [
+            '#e45a33',
+            '#fa761e',
+            '#ef486e',
+            '#4488ff',
+            '#ff44aa',
+            '#ffd165',
+            '#fde84e',
+            '#9ac53e',
+            '#05d59e',
+            '#5bbfea',
+            '#1089b1',
+            '#06394a',
+        ];
+        return colorList;
+    }
 }
