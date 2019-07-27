@@ -1,14 +1,28 @@
 # Time Controller Application
 
-Build an app from Ionic / Angular / Bootstrap.
+Keywords: Angular, Ionic, Cordova, Android, Typescript, Bootstrap, Time, Management
 
-[Try it online](https://stackblitz.com/github/ibarapascal/TimeControllerApp)
+[Try it online (stackblitz.com)](https://stackblitz.com/github/ibarapascal/TimeControllerApp)
 
-[Find the apk for Android 9 and try it on your phone](https://github.com/ibarapascal/TimeControllerApp/blob/master/TimeControllerKeikai.apk)
+[Try it on your phone (Android 9 apk)](https://github.com/ibarapascal/TimeControllerApp/blob/master/TimeControllerKeikai.apk)
+
+## Introduction
+
+An application which can let you:
+
+  1.Mark when you do what.
+  
+  2.Show record data with a vertical timeline chart.
+  
+  3.Edit the record easily.
+  
+  4.Give full statistic data and chart.
+  
+  5.Save and export the record data to remote storage.
 
 ## Current layout in 2019/07/27
 
-![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources\devScreenshot\screenshot20190727232453.jpg)
+![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190727232453.jpg)
 
 
 ## Timeline
