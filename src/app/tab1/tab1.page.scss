@@ -49,4 +49,8 @@ input.range{
   color: black;
   opacity: 1; /* Firefox */
 }
+.btn:focus,.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}
 

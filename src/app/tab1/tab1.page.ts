@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, AlertController } from '@ionic/angular';
 import { ColorPickerPage } from '../module/color-picker/color-picker.page';
 import { ColorService } from '../service/colorService';
 
@@ -18,12 +18,12 @@ export class Tab1Page {
         color: '#e45a33',
       }, {
         label: 'study',
-        color: '#fa761e',
-      }, {
-        label: 'others',
         color: '#fde84e',
       }, {
         label: 'play',
+        color: '#9ac53e',
+      }, {
+        label: 'others',
         color: '#4488ff',
       }, {
         label: 'sleep',
@@ -37,12 +37,12 @@ export class Tab1Page {
         color: '#e45a33',
       }, {
         label: 'study',
-        color: '#fa761e',
-      }, {
-        label: 'others',
         color: '#fde84e',
       }, {
         label: 'play',
+        color: '#9ac53e',
+      }, {
+        label: 'others',
         color: '#4488ff',
       }, {
         label: 'sleep',
@@ -59,7 +59,7 @@ export class Tab1Page {
       }, {
         id: 1,
         timestamp: this.ts.getTimestampToday() - 11000,
-        label: 'play',
+        label: 'others',
         color: '#4488ff',
       }, {
         id: 2,
@@ -70,16 +70,16 @@ export class Tab1Page {
         id: 3,
         timestamp: this.ts.getTimestampToday() + 1000,
         label: 'study',
-        color: '#fa761e',
+        color: '#fde84e',
       }, {
         id: 4,
         timestamp: this.ts.getTimestampToday() + 2000,
-        label: 'others',
-        color: '#fde84e',
+        label: 'play',
+        color: '#9ac53e',
       }, {
         id: 5,
         timestamp: this.ts.getTimestampToday() + 4000,
-        label: 'play',
+        label: 'others',
         color: '#4488ff',
       }, {
         id: 6,
@@ -93,10 +93,11 @@ export class Tab1Page {
 
   constructor(
     private ts: TimestampService,
+    private cs: ColorService, // Notice only used in html would prompt 'declared but never read'
     public pop: PopoverController,
-    private cs: ColorService,
+    public alertController: AlertController
     ) {
-      // Refresh every 0.5s
+      // Refresh every second
       setInterval(() => {
         // Synchronize the cursor in range if not in editing
         if (!this.recordRngEditingFlg) {
@@ -111,9 +112,6 @@ export class Tab1Page {
         this.propRngStart = this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
           (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
         this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
-      }, 500);
-      // Refresh every second
-      setInterval(() => {
         // Flash the border display css flag
         this.flashCssFlg = this.flashCssFlg ? 0 : 1;
       }, 1000);
@@ -126,6 +124,8 @@ export class Tab1Page {
 
   // label last
   labelLast = this.storage.record[this.storage.record.length - 1].label;
+  // color last
+  colorLast = this.storage.record[this.storage.record.length - 1].color;
   // Edit label flag
   labelEditingFlg = 0;
   // Edit range flag
@@ -175,52 +175,30 @@ export class Tab1Page {
     });
   }
 
-  // Pick label color from module
-  async onColorPicking(event: Event) {
-    // PopoverController, pop a component over layout
-    const colorComponent = await this.pop.create({
-      // component
-      component: ColorPickerPage,
-      // event
-      event,
-      // props
-      componentProps: {
-        setting: this.storage.setting,
-      }
-    });
-    // Define the dismiss event, catch the return data
-    colorComponent.onDidDismiss()
-        .then((data) => {
-          // Pass the color picked
-          this.colorAdded = data.data;
-      });
-    // show the component
-    return await colorComponent.present();
-  }
-
-
   // Add record
   onLabelClick(labelSelected: string) {
-    // Same with current label, do noting
+    // If same with current label, alert, do noting
     if (this.labelLast === labelSelected) {
-      // TODO alert: Current event is the same with button clicked.
+      this.pushAlert('currentEventTheSame');
       return;
     }
+    // If multiple labels at the same time, alert, do nothing
     if (this.timeSet === this.storage.record[this.storage.record.length - 1].timestamp) {
-      // TODO alert: Multiple labels at the same time.
+      this.pushAlert('multiLabelsOneTime');
       return;
     }
     // Add
+    // At least one item of record existence promised
+    // Record id well sorted and continuous promised
     this.storage.record.push({
-      // At least one item of record existence promised
-      // Record id well sorted and continuous promised
       id: this.storage.record.length,
       timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
       label: labelSelected,
       color: this.storage.setting.filter(obj => obj.label === labelSelected)[0].color,
     });
-    // Record label last (added)
+    // Record label and color last (added)
     this.labelLast = this.storage.record[this.storage.record.length - 1].label;
+    this.colorLast = this.storage.record[this.storage.record.length - 1].color;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
@@ -238,8 +216,9 @@ export class Tab1Page {
         color: '#05d59e',
       });
     }
-    // Revert label last
+    // Revert label and color last
     this.labelLast = this.storage.record[this.storage.record.length - 1].label;
+    this.colorLast = this.storage.record[this.storage.record.length - 1].color;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
@@ -247,21 +226,58 @@ export class Tab1Page {
   // Add label
   // Setting may be empty
   // Uniqueness ensured
-  onLabelAdd(label: string, color: string) {
-    if (!label || !color) {
-      // TODO may add default option.
-      // TODO alert: Please input label name and select color.
-    } else if (this.storage.setting.some(obj => obj.label === label)) { // if setting is empty, there is no error.
-      // TODO alert: There are {{label}} existed, please select another label name.
-    } else if (this.storage.setting.some(obj => obj.color === color)) {
-      // TODO alert: There are {{color}} existed, please select another label name.
-    } else {
-      this.storage.setting.push({label, color});
+  async onLabelAdd(event: Event, label: string) {
+    // Set the label added
+    this.labelAdded = label;
+    // If the label name inputed is empty, alert, do nothing.
+    if (!this.labelAdded) {
+      this.pushAlert('inputLabelNull');
+      // TODO give focus to input
+      return;
+    // If The label name inputed exist, alert, do nothing.
+    } else if (this.storage.setting.some(obj => obj.label === this.labelAdded)) { // if setting is empty, there is no error.
+      this.pushAlert('inputLabelExist');
+      // TODO give focus to input
+      return;
     }
-    // Reset input label name
+    // Show the color picker template and set the color selected.
+    await this.colorPicking(event);
+    // If the select color is empty, do nothing and let the user to push the button and pick again.
+    if (!this.colorAdded) {
+      return;
+    // If The color selected exist, alert, do nothing.
+    } else if (this.storage.setting.some(obj => obj.color === this.colorAdded)) {
+      this.pushAlert('selectColorExist');
+      this.colorAdded = '';
+      return;
+    }
+    // TODO check if write success
+    this.storage.setting.push({label: this.labelAdded, color: this.colorAdded});
     this.labelAdded = '';
-    // Reset input label color
     this.colorAdded = '';
+  }
+
+  // Select color from module
+  async colorPicking(event: Event) {
+    // PopoverController, pop a component over layout
+    const colorComponent = await this.pop.create({
+      // component
+      component: ColorPickerPage,
+      // event
+      event,
+      // props
+      componentProps: {
+        setting: this.storage.setting,
+      }
+    });
+    // show the component
+    colorComponent.present();
+    // Define the dismiss event, catch the return data
+    await colorComponent.onDidDismiss()
+        .then((data) => {
+          // Color selected
+          this.colorAdded = data.data;
+      });
   }
 
   // Remove label
@@ -275,10 +291,8 @@ export class Tab1Page {
 
   // Edit label
   onLabelEdit() {
-    this.labelEditingFlg ? this.labelEditingFlg = 0 : this.labelEditingFlg = 1;
-    // Reset input label name
+    this.labelEditingFlg = this.labelEditingFlg ? 0 : 1;
     this.labelAdded = '';
-    // Reset input label color
     this.colorAdded = '';
   }
 
@@ -296,7 +310,6 @@ export class Tab1Page {
   // Need to consider the border problem
   // Deal with each day
   calculateEachDayDisplay(calDayTimestamp: number) {
-
     // Initialize
     const timeNow: number = this.ts.getTimestampNow();
     let timeStopCal: number;
@@ -305,7 +318,6 @@ export class Tab1Page {
     const resultList: {length: number, label: string, color: string, timestamp: number, id: number}[] = [];
     // Get record data via timestamp in range of today [)
     const recordCal = Object.create(this.storage.record.filter(obj => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd));
-
     // Deal with the top
     // The situation when one event start before the day calculating and last till that day
     // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
@@ -321,10 +333,8 @@ export class Tab1Page {
       // Add the record in the top of record list for calculate
       recordCal.splice(0, 0, recordHeadItem);
     }
-
     // Deal with the bottom
     timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;
-
     // Calculate
     for (let i = 0; i < recordCal.length; i++) {
       const timeStart: number = recordCal[i].timestamp;
@@ -332,7 +342,6 @@ export class Tab1Page {
       resultList.push({
         // TODO Attention result 0 posibility, check if affected in HTML
         // Giving more precious calculate results than Math.floor
-        // length: Math.floor((timeEnd - timeStart) / 86400 * this.lengthRngStandard),
         length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthRngStandard).toFixed(2)),
         label: recordCal[i].label,
         color: recordCal[i].color,
@@ -340,11 +349,106 @@ export class Tab1Page {
         id: recordCal[i].id,
       });
     }
-
     // Give the display data list
     this.displayList = resultList;
+  }
 
-    console.log(resultList);
+  // Alert handler: presentAlertMultipleButtons
+  async pushAlert(alertId: string) {
+    switch (alertId) {
+      // Current event is the same as button clicked when adding record.
+      case('currentEventTheSame'): {
+        const alert = await this.alertController.create({
+          header: 'Ooouch, nothing performed',
+          subHeader: 'On click label button',
+          message: 'Current event is the same as button clicked when adding record. Try to choose another one.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // Multiple labels added at the same time (within one second).
+      case('multiLabelsOneTime'): {
+        const alert = await this.alertController.create({
+          header: 'Ooops, please notice',
+          subHeader: 'On click label button',
+          message: 'Multiple labels added at the same time (within one second). Only the first one would be recorded.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // The label name inputed is empty.
+      case('inputLabelNull'): {
+        const alert = await this.alertController.create({
+          header: 'Ooouch, nothing performed',
+          subHeader: 'On click add button',
+          message: 'Label name inputed is empty. Please input it before adding.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // The label name inputed exist.
+      case('inputLabelExist'): {
+        const alert = await this.alertController.create({
+          header: 'Ooouch, nothing performed',
+          subHeader: 'On click add button',
+          message: 'The label name inputed exist. Please input another label name.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // The color selected exist.
+      case('selectColorExist'): {
+        const alert = await this.alertController.create({
+          header: 'Ooouch, nothing performed',
+          subHeader: 'On click add button',
+          message: 'The color selected exist. Please select another color.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      default: break;
+    }
+    return;
   }
 
 }

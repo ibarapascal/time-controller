@@ -4,6 +4,13 @@ Build an app from Ionic / Angular / Bootstrap.
 
 [Try it online](https://stackblitz.com/github/ibarapascal/TimeControllerApp)
 
+[Find the apk for Android 9 and try it on your phone](https://github.com/ibarapascal/TimeControllerApp/blob/master/TimeControllerKeikai.apk)
+
+## Current layout in 2019/07/27
+
+![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources\devScreenshot\screenshot20190727232453.jpg)
+
+
 ## Timeline
 
 ### 20190715 Environment setting, serve, build, signature.
@@ -20,8 +27,8 @@ ionic cordova build android --prod --release
 First time: keytool -genkey -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-alias
 Move app-release-unsigned.apk to root path:
 C:\'Program Files'\Java\jdk1.8.0_211\bin\jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks app-release-unsigned.apk my-alias
-C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\zipalign -v 4 app-release-unsigned.apk HelloWorldFromKeikai.apk
-C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\apksigner verify HelloWorldFromKeikai.apk
+C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\zipalign -v 4 app-release-unsigned.apk TimeControllerKeikai.apk
+C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\apksigner verify TimeControllerKeikai.apk
 ```
 
 Path before SDK tools and apk:
@@ -173,7 +180,27 @@ this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
 }
 ```
 
+### 20190728 Alert controller, Adjust template
+
+- [Alert controller in Ionic](https://ionicframework.com/docs/api/alert)
+
+```javascript
+const alert = await this.alertController.create({
+  header: 'Ooouch, nothing performed',
+  subHeader: 'On click label button',
+  message: 'Current event is the same as button clicked when adding record. Try to choose another one.',
+  buttons: [{
+    text: 'Confirm',
+    role: 'cancel',
+    cssClass: 'secondary',
+    handler: () => {console.log('Alert'); }
+  }]});
+await alert.present();
+```
+
 ### TODO
+
+- Multi days data charts & record edit process.
 
 - Local storage in the phone.
 
@@ -181,13 +208,22 @@ this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
 
   [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
 
-- [Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
+- [Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
 
-- Multi days data charts.
+```javascript
+@ViewChild('elementId') yourElement:ElementRef;
+this.yourElement.nativeElement.focus());
+```
+
+- [Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
 - Bugfix: 1s match when dragging to the bottom.
 
 - Statistic data charts.
+
+- Button outer border.
+
+- App Android apk name and icon.
 
 
 

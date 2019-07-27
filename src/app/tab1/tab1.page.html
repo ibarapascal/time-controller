@@ -39,15 +39,16 @@
             </div>
           </div>
         </td>
-        <td align="center" style="position: relative;">
-          <div id="timeNow" style="font-size: 1.5em; height: 36px; margin-bottom: 10px;"></div>
+        <td align="center" style="position: relative; padding-left:0px;">
+          <div id="timeNow" style="font-size: 1.5em; height: 36px; margin-bottom: 6px;"></div>
           <div *ngIf="storage.setting.length">
             <!-- TODO drag and drop -->
-            <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
+            <div *ngFor="let item of storage.setting" style="margin-bottom:6px">
               <button type="button" class="btn btn-primary customLabel"
                 [style.background-color]="item.color"
                 [style.width]="labelEditingFlg ? '80%' : '100%'"
                 [style.color]="item.color && this.cs.checkIfFontColorToWhite(item.color) ? 'white' : 'black'"
+                [style.border]="item.label === labelLast && !labelEditingFlg && flashCssFlg ? '2px solid ' + item.color : '2px solid white'"
                 (click)="onLabelClick(item.label)">
                 {{item.label}}
               </button>
@@ -63,14 +64,13 @@
           </div>
           <div *ngIf="labelEditingFlg">
             <input [style.background]="colorAdded"
-                    placeholder="LABEL"
+                    placeholder="Label"
                     class="phBlack"
                     [style.color]="colorAdded && this.cs.checkIfFontColorToWhite(colorAdded) ? 'white' : 'black'"
                     [(ngModel)]="labelAdded"
-                    style="width: 80%; height: 36px;"
-                    (focusout)="onColorPicking($event)">
+                    style="width:80%; height:36px; margin-top:4px;">
             <button type="button" class="btn btn-sm customX"
-              (click)="onLabelAdd(labelAdded, colorAdded)">
+              (click)="onLabelAdd($event, labelAdded)">
               +
             </button>
           </div>
