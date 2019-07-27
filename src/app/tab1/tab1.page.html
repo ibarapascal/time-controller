@@ -2,35 +2,18 @@
   <!-- Summary the css style later -->
   <!-- Achieve first -->
   <table class="table">
-    <thead>
-      <tr>
-        <th style="text-align:center">
-          <div id="timeNow" style="font-size: 1.5em;"></div>
-        </th>
-        <th style="text-align:center">
-          <div align="left">
-            <button type="button" class="btn btn-primary customLabel"
-              style="background-color:gray;"
-              (click)="onLabelEdit()">
-              <div *ngIf="!labelEditingFlg">Edit</div>
-              <div *ngIf="labelEditingFlg">Return</div>
-            </button>
-          </div>
-        </th>
-      </tr>
-    </thead>
-
     <tbody>
       <tr>
-        <td style="border:1px solid; width:66.6%;">
+        <td style="width:66.6%;"
+          [style.border]="recordRngEditingFlg && flashCssFlg ? '1px red solid' : '1px white solid'">
           <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
               [style.padding-top]="lengthRngPaddingA + 'px'"
               [style.padding-bottom]="lengthRngPaddingA + 'px'">
             <div *ngFor="let item of displayList"
-                [style.backgroundColor]="item.color"
-                [style.height]="item.length + 'px'">
+              [style.backgroundColor]="item.color"
+              [style.height]="item.length + 'px'">
             </div>
           </div>
           <div class="calibrationDiv">
@@ -56,21 +39,15 @@
             </div>
           </div>
         </td>
-  
-        <td align="center">
+        <td align="center" style="position: relative;">
+          <div id="timeNow" style="font-size: 1.5em; height: 36px; margin-bottom: 10px;"></div>
           <div *ngIf="storage.setting.length">
-            <div *ngIf="labelEditingFlg" style="margin-bottom:10px">
-              <button type="button" class="btn btn-primary customLabel"
-                style="background-color:gray;"
-                (click)="onLabelDefault()">
-                Default
-              </button>
-            </div>
             <!-- TODO drag and drop -->
             <div *ngFor="let item of storage.setting" style="margin-bottom:10px">
               <button type="button" class="btn btn-primary customLabel"
                 [style.background-color]="item.color"
                 [style.width]="labelEditingFlg ? '80%' : '100%'"
+                [style.color]="item.color && this.cs.checkIfFontColorToWhite(item.color) ? 'white' : 'black'"
                 (click)="onLabelClick(item.label)">
                 {{item.label}}
               </button>
@@ -80,29 +57,35 @@
                 X
               </button>
             </div>
-            <div *ngIf="labelEditingFlg">
-              <input [style.background]="colorAdded"
-                     placeholder="Label Name"
-                     [(ngModel)]="labelAdded"
-                     style="width: 80%;"
-                     (focusout)="onColorPicking($event)">
-              <button type="button" class="btn btn-sm customX"
-                style="background-color:gray;"
-                (click)="onLabelAdd(labelAdded, colorAdded)">
-                +
-              </button>
-            </div>
-            <!-- TEST -->
-            <div>
-              Time now: {{this.ts.getTimestampNow()}}
-            </div>
-            <div>
-              Time drag: {{this.timeSet}} 
-            </div>
           </div>
-  
           <div *ngIf="!storage.setting.length">
             You can creat your label below.
+          </div>
+          <div *ngIf="labelEditingFlg">
+            <input [style.background]="colorAdded"
+                    placeholder="LABEL"
+                    class="phBlack"
+                    [style.color]="colorAdded && this.cs.checkIfFontColorToWhite(colorAdded) ? 'white' : 'black'"
+                    [(ngModel)]="labelAdded"
+                    style="width: 80%; height: 36px;"
+                    (focusout)="onColorPicking($event)">
+            <button type="button" class="btn btn-sm customX"
+              (click)="onLabelAdd(labelAdded, colorAdded)">
+              +
+            </button>
+          </div>
+          <div style="position:absolute; width:80%; bottom:12px">
+            <button *ngIf="labelEditingFlg" type="button" class="btn btn-primary customLabel"
+              style="background-color:gray; margin-bottom: 10px;"
+              (click)="onLabelDefault()">
+              Default
+            </button>
+            <button type="button" class="btn btn-primary customLabel"
+              style="background-color:gray;"
+              (click)="onLabelEdit()">
+              <div *ngIf="!labelEditingFlg">Edit</div>
+              <div *ngIf="labelEditingFlg">Return</div>
+            </button>
           </div>
         </td>
       </tr>

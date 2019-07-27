@@ -45,4 +45,8 @@ input.range{
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
+.phBlack::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 1; /* Firefox */
+}
 

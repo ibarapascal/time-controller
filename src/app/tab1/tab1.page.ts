@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { TimestampService } from '../service/timestampService';
 import { PopoverController } from '@ionic/angular';
 import { ColorPickerPage } from '../module/color-picker/color-picker.page';
+import { ColorService } from '../service/colorService';
 
 @Component({
   selector: 'app-tab1',
@@ -22,11 +23,14 @@ export class Tab1Page {
         label: 'others',
         color: '#fde84e',
       }, {
-        label: 'game',
+        label: 'play',
         color: '#4488ff',
       }, {
         label: 'sleep',
         color: '#06394a',
+      }, {
+        label: 'none',
+        color: '#808080',
       }],
       defaultSetting: [{
         label: 'work',
@@ -38,21 +42,24 @@ export class Tab1Page {
         label: 'others',
         color: '#fde84e',
       }, {
-        label: 'game',
+        label: 'play',
         color: '#4488ff',
       }, {
         label: 'sleep',
         color: '#06394a',
+      }, {
+        label: 'none',
+        color: '#808080',
       }],
       record: [{
         id: 0,
         timestamp: 0,
-        label: 'default',
-        color: '#05d59e',
+        label: 'none',
+        color: '#808080',
       }, {
         id: 1,
         timestamp: this.ts.getTimestampToday() - 11000,
-        label: 'game',
+        label: 'play',
         color: '#4488ff',
       }, {
         id: 2,
@@ -72,7 +79,7 @@ export class Tab1Page {
       }, {
         id: 5,
         timestamp: this.ts.getTimestampToday() + 4000,
-        label: 'game',
+        label: 'play',
         color: '#4488ff',
       }, {
         id: 6,
@@ -87,6 +94,7 @@ export class Tab1Page {
   constructor(
     private ts: TimestampService,
     public pop: PopoverController,
+    private cs: ColorService,
     ) {
       // Refresh every 0.5s
       setInterval(() => {
@@ -104,6 +112,11 @@ export class Tab1Page {
           (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
         this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
       }, 500);
+      // Refresh every second
+      setInterval(() => {
+        // Flash the border display css flag
+        this.flashCssFlg = this.flashCssFlg ? 0 : 1;
+      }, 1000);
       // Refresh every minute
       setInterval(() => {
         // Show record display
@@ -117,6 +130,8 @@ export class Tab1Page {
   labelEditingFlg = 0;
   // Edit range flag
   recordRngEditingFlg = 0;
+  // Flash css flag
+  flashCssFlg = 0;
   // display id and timestamp list
   displayList = [];
 

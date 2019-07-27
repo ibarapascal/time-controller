@@ -23,7 +23,7 @@ export class ColorService {
     checkIfFontColorToWhite(inputHEX: string): boolean {
         const rgb = this.hexToRgb(inputHEX);
         const calResult = Math.round((rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000);
-        return calResult > 125 ? false : true;
+        return calResult > 128 ? false : true;
     }
 
     // Define a default light color list

@@ -134,7 +134,7 @@ document.getElementById('rangeTime').addEventListener('input', () => { //console
 
    [3.Ionic: RGB color picker](http://inmagik.github.io/ionic-color-picker/)
 
-### 20190727 Color picker page module
+### 20190727 Color picker page module, Adjust template, Placeholder Font Color
 
 - [Ionic generate command](https://ionicframework.com/docs/cli/commands/generate)
 
@@ -164,10 +164,16 @@ this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
     return await comp.present();
   }
 ```
+- [Input placeholder color css](https://www.w3schools.com/cssref/sel_placeholder.asp)
+
+```css
+.phBlack::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 1; /* Firefox */
+}
+```
 
 ### TODO
-
-- Template adjustment (font color, position, transparency)
 
 - Local storage in the phone.
 
