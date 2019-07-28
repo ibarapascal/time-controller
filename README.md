@@ -194,7 +194,7 @@ this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
 }
 ```
 
-### 20190728 Alert controller, Adjust template
+### 20190728 Alert controller, Adjust template, Date picker
 
 - [Alert controller in Ionic](https://ionicframework.com/docs/api/alert)
 
@@ -212,8 +212,21 @@ const alert = await this.alertController.create({
 await alert.present();
 ```
 
-### TODO
+- [Ionic: Date picker](https://ionicframework.com/docs/native/date-picker) <= seems [not working in cordova](https://stackoverflow.com/questions/45013041/ionic-native-date-picker-not-working-on-android)
 
+- [Ionic: ion-datetime](https://ionicframework.com/docs/api/datetime)
+
+  <= Solved: ion-datetime attribute (like min and max) must contain '0' in month and day. [Trans under Cordova](https://github.com/ionic-team/ionic/issues/15397)
+
+  <= Issue: [Ignored attempt to cancel a touchstart event with cancelable=false](https://github.com/ionic-team/ionic/issues/15256).
+
+  <= Issue: Pick only YYYY/MM/DD while return minutes etc not equals zero.
+
+  <= Issue: Sync problem when chaning flag / press confirm button in calendar.
+
+  => Decide to achieve the event natively.
+
+### DOING
 - Multi days data charts & record edit process.
 
 - Local storage in the phone.
@@ -221,6 +234,8 @@ await alert.present();
   [1.Ionic storage](https://ionicframework.com/docs/building/storage)
 
   [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
+
+### TODO
 
 - [Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
 

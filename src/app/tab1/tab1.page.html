@@ -6,12 +6,36 @@
       <tr>
         <td style="width:66.6%;"
           [style.border]="recordRngEditingFlg && flashCssFlg ? '1px red solid' : '1px white solid'">
+          <div class="dragLabelDiv"
+              [style.height]="lengthRngFull + 2 + 'px'"
+              [style.padding-top]="lengthRngPaddingB + 'px'"
+              [style.padding-bottom]="lengthRngPaddingB + 'px'">
+            <input type="range"
+                  id="rangeDate"
+                  class="range"
+                  [style.margin-top]="'0px'"
+                  [min]="'0'"
+                  [max]="'30'"
+                  step="1"
+                  list=rangeDateList
+                  [style.height]="lengthRngStandard + lengthRngPaddingB * 2 + 'px'"
+                  [(ngModel)]="rangeDateOffset">
+              <datalist id=rangeDateList>
+                <option *ngFor="let item of rangeDateList">{{item}}</option>
+              </datalist>
+          </div>
+          <div class="absoluteDiv"
+                id="dateDrag"
+                [style.top]="rangeDateOffset * 20 + 'px'">
+                XXX
+          </div>
           <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
               [style.padding-top]="lengthRngPaddingA + 'px'"
               [style.padding-bottom]="lengthRngPaddingA + 'px'">
             <div *ngFor="let item of displayList"
+            style="width:100%;"
               [style.backgroundColor]="item.color"
               [style.height]="item.length + 'px'">
             </div>
@@ -35,12 +59,12 @@
             <div class="absoluteDiv"
                 id="timeDrag"
                 [style.top]="lengthTimeSetPosition + 'px'"
-                [style.left]="'-65px'">
+                [style.left]="'-60px'">
             </div>
           </div>
         </td>
         <td align="center" style="position: relative; padding-left:0px;">
-          <div id="timeNow" style="font-size: 1.5em; height: 36px; margin-bottom: 6px;"></div>
+          <div id="timeNow" class="calendarTime"></div>
           <div *ngIf="storage.setting.length">
             <!-- TODO drag and drop -->
             <div *ngFor="let item of storage.setting" style="margin-bottom:6px">
@@ -92,7 +116,7 @@
     </tbody>
   </table>
   
-  <div style="margin-bottom:10px" align="right">
+  <div style="margin-bottom:10px">
     <button type="button" class="btn btn-primary customLabel"
       style="background-color:black;"
       (click)="onLabelRevert()">Revert</button>

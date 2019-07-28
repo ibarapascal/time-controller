@@ -24,7 +24,7 @@ export class TimestampService {
         const stemp = time.getSeconds();
         const m = mtemp < 10 ? '0' + mtemp.toString() : mtemp.toString();
         const s = stemp < 10 ? '0' + stemp.toString() : stemp.toString();
-        document.getElementById(htmlElementId).innerHTML = h + ':' + m + ':' + s;
+        if (document.getElementById(htmlElementId)) {document.getElementById(htmlElementId).innerHTML = h + ':' + m + ':' + s; }
     }
 
 }
