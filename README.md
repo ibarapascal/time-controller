@@ -226,14 +226,22 @@ await alert.present();
 
   => Decide to achieve the event natively.
 
-### DOING
+### 20190729 Ionic storage, Date picker, Bugfix
+
 - Multi days data charts & record edit process.
 
 - Local storage in the phone.
 
-  [1.Ionic storage](https://ionicframework.com/docs/building/storage)
+  [1.Ionic storage](https://ionicframework.com/docs/building/storage) <= Reference [example](https://ionicacademy.com/store-data-inside-ionic/)
 
   [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
+
+
+### DOING
+
+- Bugfix
+
+- Date picker
 
 ### TODO
 

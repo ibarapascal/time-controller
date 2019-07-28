@@ -5,6 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,7 +19,13 @@ import { ColorPickerPageModule } from './module/color-picker/color-picker.module
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [ColorPickerPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ColorPickerPageModule],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
+    AppRoutingModule,
+    ColorPickerPageModule
+  ],
   providers: [
     StatusBar,
     SplashScreen,

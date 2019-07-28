@@ -3,6 +3,7 @@ import { TimestampService } from '../service/timestampService';
 import { PopoverController, AlertController } from '@ionic/angular';
 import { ColorPickerPage } from '../module/color-picker/color-picker.page';
 import { ColorService } from '../service/colorService';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab1',
@@ -11,90 +12,18 @@ import { ColorService } from '../service/colorService';
 })
 export class Tab1Page {
 
+
   // Fake data
   storage = {
-    setting: [{
-      label: 'work',
-      color: '#e45a33',
-    }, {
-      label: 'study',
-      color: '#fde84e',
-    }, {
-      label: 'play',
-      color: '#9ac53e',
-    }, {
-      label: 'others',
-      color: '#4488ff',
-    }, {
-      label: 'sleep',
-      color: '#06394a',
-    }, {
-      label: 'none',
-      color: '#808080',
-    }],
-    defaultSetting: [{
-      label: 'work',
-      color: '#e45a33',
-    }, {
-      label: 'study',
-      color: '#fde84e',
-    }, {
-      label: 'play',
-      color: '#9ac53e',
-    }, {
-      label: 'others',
-      color: '#4488ff',
-    }, {
-      label: 'sleep',
-      color: '#06394a',
-    }, {
-      label: 'none',
-      color: '#808080',
-    }],
-    record: [{
-      id: 0,
-      timestamp: 0,
-      label: 'none',
-      color: '#808080',
-    }, {
-      id: 1,
-      timestamp: this.ts.getTimestampToday() - 32000,
-      label: 'others',
-      color: '#4488ff',
-    }, {
-      id: 2,
-      timestamp: this.ts.getTimestampToday() - 16000,
-      label: 'work',
-      color: '#e45a33',
-    }, {
-      id: 3,
-      timestamp: this.ts.getTimestampToday() - 8000,
-      label: 'study',
-      color: '#fde84e',
-    }, {
-      id: 4,
-      timestamp: this.ts.getTimestampToday() - 4000,
-      label: 'play',
-      color: '#9ac53e',
-    }, {
-      id: 5,
-      timestamp: this.ts.getTimestampToday() + 1000,
-      label: 'others',
-      color: '#4488ff',
-    }, {
-      id: 6,
-      timestamp: this.ts.getTimestampToday() + 4000,
-      label: 'sleep',
-      color: '#06394a',
-    }],
-    displayRecordIdList: [],
-    editcache: [],
+    setting: [],
+    defaultSetting: [],
+    record: [],
   };
 
   // label last
-  labelLast = this.storage.record[this.storage.record.length - 1].label;
+  labelLast = '';
   // color last
-  colorLast = this.storage.record[this.storage.record.length - 1].color;
+  colorLast = '';
   // Edit label flag
   labelEditingFlg = 0;
   // Edit range flag
@@ -103,6 +32,10 @@ export class Tab1Page {
   flashCssFlg = 0;
   // display id and timestamp list
   displayList = [];
+  // setting label list
+  labelList = [];
+  // record list
+  recordList = [];
 
   // date scale list
   rangeDateList = Array.from(Array(31).keys()).reverse();
@@ -137,11 +70,69 @@ export class Tab1Page {
   // length full
   lengthRngFull = this.lengthRngStandard * 25 / 24;
 
+  dbdefaultSetting = [{
+    label: 'work',
+    color: '#e45a33',
+  }, {
+    label: 'study',
+    color: '#fde84e',
+  }, {
+    label: 'play',
+    color: '#9ac53e',
+  }, {
+    label: 'others',
+    color: '#4488ff',
+  }, {
+    label: 'sleep',
+    color: '#06394a',
+  }, {
+    label: 'nothing',
+    color: '#808080',
+  }];
+
+  dbrecord = [{
+    id: 0,
+    timestamp: 0,
+    label: 'nothing',
+    color: '#808080',
+  }, {
+    id: 1,
+    timestamp: this.ts.getTimestampToday() - 32000,
+    label: 'others',
+    color: '#4488ff',
+  }, {
+    id: 2,
+    timestamp: this.ts.getTimestampToday() - 16000,
+    label: 'work',
+    color: '#e45a33',
+  }, {
+    id: 3,
+    timestamp: this.ts.getTimestampToday() - 8000,
+    label: 'study',
+    color: '#fde84e',
+  }, {
+    id: 4,
+    timestamp: this.ts.getTimestampToday() - 4000,
+    label: 'play',
+    color: '#9ac53e',
+  }, {
+    id: 5,
+    timestamp: this.ts.getTimestampToday() + 1000,
+    label: 'others',
+    color: '#4488ff',
+  }, {
+    id: 6,
+    timestamp: this.ts.getTimestampToday() + 2000,
+    label: 'sleep',
+    color: '#06394a',
+  }];
+
   constructor(
     private ts: TimestampService,
     private cs: ColorService, // Notice only used in html would prompt 'declared but never read'
     public pop: PopoverController,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private storageDB: Storage,
     ) {
       // Refresh every second
       setInterval(() => {
@@ -154,9 +145,10 @@ export class Tab1Page {
         this.ts.showTimeInSeconds('timeNow');
         // Show drag range time in seconds
         this.ts.showTimeInSeconds('timeDrag', this.timeSet);
+
         // Range start and end proportion
-        this.propRngStart = this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
-          (this.storage.record[this.storage.record.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
+        this.propRngStart = this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
+            (this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
         this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
         // Flash the border display css flag
         this.flashCssFlg = this.flashCssFlg ? 0 : 1;
@@ -169,9 +161,22 @@ export class Tab1Page {
     }
 
   // tslint:disable-next-line: use-life-cycle-interface
-  ngOnInit() {
-    console.log(this.rangeDateList);
-    // TODO get the data from storage
+  async ngOnInit() {
+    // Init label default setting
+    await this.storageDB.set('defaultSetting', this.dbdefaultSetting);
+    // TEST db record data
+    await this.storageDB.set('record', this.dbrecord);
+    // TEST db setting
+    await this.storageDB.set('setting', this.dbdefaultSetting);
+
+    this.labelList = this.dbdefaultSetting;
+
+    await this.storageDB.get('record').then(r => {
+      this.recordList = r;
+      this.labelLast = r[r.length - 1].label;
+      this.colorLast = r[r.length - 1].color;
+    });
+
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
@@ -192,49 +197,55 @@ export class Tab1Page {
   }
 
   // Add record
-  onLabelClick(labelSelected: string) {
+  async onLabelClick(labelSelected: string) {
     // If same with current label, alert, do noting
     if (this.labelLast === labelSelected) {
       this.pushAlert('currentEventTheSame');
       return;
     }
-    // If multiple labels at the same time, alert, do nothing
-    if (this.timeSet === this.storage.record[this.storage.record.length - 1].timestamp) {
-      this.pushAlert('multiLabelsOneTime');
-      return;
-    }
     // Add
     // At least one item of record existence promised
     // Record id well sorted and continuous promised
-    this.storage.record.push({
-      id: this.storage.record.length,
-      timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
-      label: labelSelected,
-      color: this.storage.setting.filter(obj => obj.label === labelSelected)[0].color,
+    await this.storageDB.get('setting').then(r => this.labelList = r);
+    await this.storageDB.get('record').then(r => {
+      // If multiple labels at the same time, alert, do nothing
+      if (this.timeSet === r[r.length - 1].timestamp) {
+        this.pushAlert('multiLabelsOneTime');
+        return;
+      }
+      r.push({
+        id: r.length,
+        timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
+        label: labelSelected,
+        color: this.labelList.filter(obj => obj.label === labelSelected)[0].color,
+      });
+      this.recordList = r;
+      this.storageDB.set('record', this.recordList);
     });
     // Record label and color last (added)
-    this.labelLast = this.storage.record[this.storage.record.length - 1].label;
-    this.colorLast = this.storage.record[this.storage.record.length - 1].color;
+    this.labelLast = this.recordList[this.recordList.length - 1].label;
+    this.colorLast = this.recordList[this.recordList.length - 1].color;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
 
   // Remove record
-  onLabelRevert() {
+  async onLabelRevert() {
     // Remove
-    this.storage.record.pop();
-    // Save the default
-    if (!this.storage.record.length) {
-      this.storage.record.push({
+    await this.storageDB.get('record').then(r => {
+      r.pop();
+      // Save the default
+      this.recordList = r.length === 1 ? [{
         id: 0,
         timestamp: 0,
         label: 'default',
         color: '#05d59e',
-      });
-    }
+      }] : r;
+      this.storageDB.set('record', this.recordList);
+    });
     // Revert label and color last
-    this.labelLast = this.storage.record[this.storage.record.length - 1].label;
-    this.colorLast = this.storage.record[this.storage.record.length - 1].color;
+    this.labelLast = this.recordList[this.recordList.length - 1].label;
+    this.colorLast = this.recordList[this.recordList.length - 1].color;
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
   }
@@ -243,6 +254,7 @@ export class Tab1Page {
   // Setting may be empty
   // Uniqueness ensured
   async onLabelAdd(event: Event, label: string) {
+    await this.storageDB.get('setting').then(r => this.labelList = r);
     // Set the label added
     this.labelAdded = label;
     // If the label name inputed is empty, alert, do nothing.
@@ -251,30 +263,33 @@ export class Tab1Page {
       // TODO give focus to input
       return;
     // If The label name inputed exist, alert, do nothing.
-    } else if (this.storage.setting.some(obj => obj.label === this.labelAdded)) { // if setting is empty, there is no error.
+    } else if (this.labelList.some(obj => obj.label === this.labelAdded)) { // if setting is empty, there is no error.
       this.pushAlert('inputLabelExist');
       // TODO give focus to input
       return;
     }
     // Show the color picker template and set the color selected.
-    await this.colorPicking(event);
+    await this.colorPicking(event, this.labelList);
     // If the select color is empty, do nothing and let the user to push the button and pick again.
     if (!this.colorAdded) {
       return;
     // If The color selected exist, alert, do nothing.
-    } else if (this.storage.setting.some(obj => obj.color === this.colorAdded)) {
+    } else if (this.labelList.some(obj => obj.color === this.colorAdded)) {
       this.pushAlert('selectColorExist');
       this.colorAdded = '';
       return;
     }
-    // TODO check if write success
-    this.storage.setting.push({label: this.labelAdded, color: this.colorAdded});
+    this.labelList.push({
+      label: this.labelAdded,
+      color: this.colorAdded,
+    });
+    await this.storageDB.set('setting', this.labelList);
     this.labelAdded = '';
     this.colorAdded = '';
   }
 
   // Select color from module
-  async colorPicking(event: Event) {
+  async colorPicking(event: Event, settingData: {label: string, color: string}[]) {
     // PopoverController, pop a component over layout
     const colorComponent = await this.pop.create({
       // component
@@ -283,7 +298,7 @@ export class Tab1Page {
       event,
       // props
       componentProps: {
-        setting: this.storage.setting,
+        setting: settingData,
       }
     });
     // show the component
@@ -297,12 +312,12 @@ export class Tab1Page {
   }
 
   // Remove label
-  // Only remove the existing label from displayed button
-  // Remove the only one of selected
-  onLabelDelete(label: string) {
-    const itemDelete = this.storage.setting.filter(obj => obj.label === label)[0]; // Uniqueness premised
-    const indexOfItemDelete = this.storage.setting.indexOf(itemDelete);
-    this.storage.setting.splice(indexOfItemDelete, 1);
+  async onLabelDelete(label: string) {
+    await this.storageDB.get('setting').then(r => {
+      r.splice(r.indexOf(r.filter((obj: { label: string; }) => obj.label === label)[0]), 1);
+      this.labelList = r;
+      this.storageDB.set('setting', r);
+    });
   }
 
   // Edit label
@@ -313,11 +328,11 @@ export class Tab1Page {
   }
 
   // Set label to default
-  onLabelDefault() {
-    // Pass object by reference: NG
-    // this.storage.setting = this.storage.defaultSetting;
-    // Pass object by value: OK
-    this.storage.setting = Object.create(this.storage.defaultSetting);
+  async onLabelDefault() {
+    await this.storageDB.get('defaultSetting').then(r => {
+      this.labelList = r;
+      this.storageDB.set('setting', r);
+    });
   }
 
   // Make common component event processing code
@@ -325,7 +340,7 @@ export class Tab1Page {
   // Have two situation, one is that past date display, another is today's display
   // Need to consider the border problem
   // Deal with each day
-  calculateEachDayDisplay(calDayTimestamp: number) {
+  async calculateEachDayDisplay(calDayTimestamp: number) {
     // Initialize
     const timeNow: number = this.ts.getTimestampNow();
     let timeStopCal: number;
@@ -333,17 +348,23 @@ export class Tab1Page {
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
     const resultList: {length: number, label: string, color: string, timestamp: number, id: number}[] = [];
     // Get record data via timestamp in range of today [)
-    const recordCal = Object.create(this.storage.record.filter(obj => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd));
+    let recordCal: {id: number, timestamp: number, label: string, color: string}[];
+    await this.storageDB.get('record').then(r => {
+      recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
+    });
     // Deal with the top
     // The situation when one event start before the day calculating and last till that day
     // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
     if (recordCal.some((obj: { timestamp: number; }) => obj.timestamp !== timeDayStart)) {
       // Find the minimum id
       const recordHeadItemId: number = recordCal.reduce(
-        (prev: { id: number; }, curr: { id: number; }) => prev.id < curr.id ? prev : curr).id;
+        (prev, curr) => prev.id < curr.id ? prev : curr).id;
       // Find the record one before minimum via id
       // Assume the uniqueness of data recorded
-      const recordHeadItem = Object.create(this.storage.record.filter(obj => obj.id === recordHeadItemId - 1)[0]);
+      let recordHeadItem: {id: number, timestamp: number, label: string, color: string};
+      await this.storageDB.get('record').then(r => {
+        recordHeadItem = r.filter((obj: { id: number; }) => obj.id === recordHeadItemId - 1)[0];
+      });
       // Change the record timestamp to today start for calcualte
       recordHeadItem.timestamp = timeDayStart;
       // Add the record in the top of record list for calculate
