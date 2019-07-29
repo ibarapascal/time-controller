@@ -27,5 +27,15 @@ export class TimestampService {
         if (document.getElementById(htmlElementId)) {document.getElementById(htmlElementId).innerHTML = h + ':' + m + ':' + s; }
     }
 
+    // Show local date to string in days
+    showTimeInDays(htmlElementId: string, timestamp?: number) {
+        const time = timestamp ? new Date(timestamp * 1000) : new Date();
+        const mtemp = time.getMonth() + 1;
+        const dtemp = time.getDate(); // Notice that getDay returns Mon, Tues...
+        const m = mtemp < 10 ? '0' + mtemp.toString() : mtemp.toString();
+        const d = dtemp < 10 ? '0' + dtemp.toString() : dtemp.toString();
+        if (document.getElementById(htmlElementId)) {document.getElementById(htmlElementId).innerHTML = m + '/' + d; }
+    }
+
 }
 

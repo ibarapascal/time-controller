@@ -20,9 +20,9 @@ An application which can let you:
   
   5.Save and export the record data to remote storage.
 
-## Current layout in 2019/07/27
+## Current layout in 2019/07/30
 
-![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190727232453.jpg)
+![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190730012803.jpg)
 
 
 ## Timeline
@@ -262,8 +262,9 @@ await alert.present();
   result = XXX;
 ```
 
-
 ### TODO
+
+- Bugfix: Status refresh between two range input
 
 - Maybe rewrite most of content later.
 

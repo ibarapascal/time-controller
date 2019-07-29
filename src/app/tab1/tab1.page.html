@@ -27,7 +27,6 @@
           <div class="absoluteDiv"
                 id="dateDrag"
                 [style.top]="rangeDateOffset * 20 + 'px'">
-                XXX
           </div>
           <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
@@ -113,14 +112,18 @@
           </div>
         </td>
       </tr>
+      <tr>
+        <td style="width:66.66%; padding-top:0px; padding-bottom:0px;">
+          <button type="button" class="btn btn-primary customLabel"
+          style="background-color:black;"
+          (click)="onLabelRevert()">Revert</button>
+        </td>
+        <td style="text-align:right; padding-top:0px; padding-bottom:0px;">
+          <p style="height:18px; margin:0px; font-size:1em">Kei Kai</p>
+          <p style="height:18px; margin:0px; font-size:0.75em">2019/07/30</p>
+        </td>
+      </tr>
     </tbody>
   </table>
-  
-  <div style="margin-bottom:10px">
-    <button type="button" class="btn btn-primary customLabel"
-      style="background-color:black;"
-      (click)="onLabelRevert()">Revert</button>
-  </div>
-
 </ion-content>
 

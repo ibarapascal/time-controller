@@ -152,10 +152,10 @@ export class Tab1Page {
   async ngOnInit() {
     // Init label default setting
     await this.storageDB.set('defaultSetting', this.dbdefaultSetting);
-    // TEST db record data
-    await this.storageDB.set('record', this.dbrecord);
-    // TEST db setting
-    await this.storageDB.set('setting', this.dbdefaultSetting);
+    // // TEST db record data
+    // await this.storageDB.set('record', this.dbrecord);
+    // // TEST db setting
+    // await this.storageDB.set('setting', this.dbdefaultSetting);
 
     this.labelList = this.dbdefaultSetting;
 
@@ -168,22 +168,33 @@ export class Tab1Page {
     console.log('Start up');
     // Refresh today display
     this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    // Show local date to string in days
+    this.ts.showTimeInDays('dateDrag', this.timeDayStart);
     // Response the range changing
     document.getElementById('rangeTime').addEventListener('input', () => {
       // Get the setted time from record edit input
       this.timeSet = this.ts.getTimestampToday()
         - this.rangeDateOffsetUsed * 86400
         + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
-      this.recordRngEditingFlg = this.timeSet !== this.ts.getTimestampNow() ? 1 : 0;
+      // TODO Relax condition to fix 1s issue
+      this.recordRngEditingFlg = this.timeSet === this.ts.getTimestampNow() ? 0 : 1;
       // Show drag range time in seconds
       this.ts.showTimeInSeconds('timeDrag', this.timeSet);
     });
+    // TODO change the rang flag status via date range flag
     document.getElementById('rangeDate').addEventListener('input', () => {
       this.rangeDateOffsetUsed = 30 - this.rangeDateOffset;
       this.dateEditingFlg = this.rangeDateOffsetUsed === 0 ? 0 : 1;
       this.timeDayStart = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
+      // Show local date to string in days
+      this.ts.showTimeInDays('dateDrag', this.timeDayStart);
       // Refresh date setted display
       this.calculateEachDayDisplay(this.timeDayStart);
+      // From up
+      // Get the setted time from record edit input
+      this.timeSet = this.ts.getTimestampToday()
+      - this.rangeDateOffsetUsed * 86400
+      + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
     });
   }
 
@@ -340,7 +351,12 @@ export class Tab1Page {
   }
 
   // Set label to default
-  async onLabelDefault() {
+  onLabelDefault() {
+    this.pushAlert('makeSureToDefaultLabel');
+  }
+
+  // Set label to default run
+  async onLabelDefaultDoing() {
     await this.storageDB.get('defaultSetting').then(r => {
       this.labelList = r;
       this.storageDB.set('setting', r);
@@ -434,7 +450,6 @@ export class Tab1Page {
   // If label added the same with the next one, delete the next one from record
   arrayRemoveCurrRepeatByLabel(list: {timestamp: number, label: string, color: string}[])
     : {timestamp: number, label: string, color: string}[] {
-    console.log(list);
     let labelTemp = '';
     const deleteTimestampList = [];
     // Check if repeat
@@ -449,7 +464,6 @@ export class Tab1Page {
     deleteTimestampList.forEach(x => {
       list.splice(list.indexOf(list.filter((obj: { timestamp: number; }) => obj.timestamp === x)[0]), 1);
     });
-    console.log(list);
     return list;
   }
 
@@ -536,6 +550,32 @@ export class Tab1Page {
           message: 'The color selected exist. Please select another color.',
           buttons: [{
             text: 'Confirm',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // Confirm to default the label
+      case('makeSureToDefaultLabel'): {
+        const alert = await this.alertController.create({
+          header: 'Confirming, are you really want to do this?',
+          subHeader: 'On click default button',
+          message: 'The label setting would be revert to default. Please confirm.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'confirm',
+            cssClass: 'secondary',
+            handler: () => {
+              this.onLabelDefaultDoing();
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }, {
+            text: 'Cancel',
             role: 'cancel',
             cssClass: 'secondary',
             handler: () => {
