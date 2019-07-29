@@ -12,14 +12,6 @@ import { Storage } from '@ionic/storage';
 })
 export class Tab1Page {
 
-
-  // Fake data
-  storage = {
-    setting: [],
-    defaultSetting: [],
-    record: [],
-  };
-
   // label last
   labelLast = '';
   // color last
@@ -28,6 +20,8 @@ export class Tab1Page {
   labelEditingFlg = 0;
   // Edit range flag
   recordRngEditingFlg = 0;
+  // Edit date flag
+  dateEditingFlg = 0;
   // Flash css flag
   flashCssFlg = 0;
   // display id and timestamp list
@@ -91,37 +85,30 @@ export class Tab1Page {
   }];
 
   dbrecord = [{
-    id: 0,
     timestamp: 0,
     label: 'nothing',
     color: '#808080',
   }, {
-    id: 1,
     timestamp: this.ts.getTimestampToday() - 32000,
     label: 'others',
     color: '#4488ff',
   }, {
-    id: 2,
     timestamp: this.ts.getTimestampToday() - 16000,
     label: 'work',
     color: '#e45a33',
   }, {
-    id: 3,
     timestamp: this.ts.getTimestampToday() - 8000,
     label: 'study',
     color: '#fde84e',
   }, {
-    id: 4,
     timestamp: this.ts.getTimestampToday() - 4000,
     label: 'play',
     color: '#9ac53e',
   }, {
-    id: 5,
     timestamp: this.ts.getTimestampToday() + 1000,
     label: 'others',
     color: '#4488ff',
   }, {
-    id: 6,
     timestamp: this.ts.getTimestampToday() + 2000,
     label: 'sleep',
     color: '#06394a',
@@ -145,7 +132,6 @@ export class Tab1Page {
         this.ts.showTimeInSeconds('timeNow');
         // Show drag range time in seconds
         this.ts.showTimeInSeconds('timeDrag', this.timeSet);
-
         // Range start and end proportion
         this.propRngStart = this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
             (this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
@@ -156,7 +142,9 @@ export class Tab1Page {
       // Refresh every minute
       setInterval(() => {
         // Show record display
-        this.calculateEachDayDisplay(this.ts.getTimestampToday());
+        if (!this.dateEditingFlg) {
+          this.calculateEachDayDisplay(this.ts.getTimestampToday());
+        }
       }, 60000);
     }
 
@@ -183,13 +171,16 @@ export class Tab1Page {
     // Response the range changing
     document.getElementById('rangeTime').addEventListener('input', () => {
       // Get the setted time from record edit input
-      this.timeSet = this.ts.getTimestampToday() + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
+      this.timeSet = this.ts.getTimestampToday()
+        - this.rangeDateOffsetUsed * 86400
+        + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
       this.recordRngEditingFlg = this.timeSet !== this.ts.getTimestampNow() ? 1 : 0;
       // Show drag range time in seconds
       this.ts.showTimeInSeconds('timeDrag', this.timeSet);
     });
     document.getElementById('rangeDate').addEventListener('input', () => {
       this.rangeDateOffsetUsed = 30 - this.rangeDateOffset;
+      this.dateEditingFlg = this.rangeDateOffsetUsed === 0 ? 0 : 1;
       this.timeDayStart = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
       // Refresh date setted display
       this.calculateEachDayDisplay(this.timeDayStart);
@@ -198,27 +189,45 @@ export class Tab1Page {
 
   // Add record
   async onLabelClick(labelSelected: string) {
+    // Get the record this day
+    const timeDayStart: number = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
+    const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
+    let recordCal: {timestamp: number, label: string, color: string}[];
+    await this.storageDB.get('record').then(r => {
+      recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
+    });
     // If same with current label, alert, do noting
-    if (this.labelLast === labelSelected) {
+    // Today
+    if ((!this.dateEditingFlg && this.labelLast === labelSelected) ||
+    // History
+      // TODO bugfix: if last day giving label !== 'nothing', add the same label at the top of this day give no alert
+      (this.dateEditingFlg && this.arrayGetThePreviousOne(recordCal, this.timeSet).label === labelSelected)) {
       this.pushAlert('currentEventTheSame');
       return;
     }
     // Add
     // At least one item of record existence promised
-    // Record id well sorted and continuous promised
+    // Record timestamp well sorted and continuous promised
     await this.storageDB.get('setting').then(r => this.labelList = r);
     await this.storageDB.get('record').then(r => {
       // If multiple labels at the same time, alert, do nothing
-      if (this.timeSet === r[r.length - 1].timestamp) {
+      if (r.some((obj: { timestamp: number; }) => obj.timestamp === this.timeSet || obj.timestamp === this.timeSet + 1000)) {
         this.pushAlert('multiLabelsOneTime');
         return;
       }
       r.push({
-        id: r.length,
         timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
         label: labelSelected,
         color: this.labelList.filter(obj => obj.label === labelSelected)[0].color,
       });
+      // If added in history record, sort.
+      if (this.dateEditingFlg) {
+        r.sort((prev: { timestamp: number; }, curr: { timestamp: number; }) => {
+          return prev.timestamp - curr.timestamp;
+        });
+        // If label added the same with the next one, delete the next one from record.
+        r = this.arrayRemoveCurrRepeatByLabel(r);
+      }
       this.recordList = r;
       this.storageDB.set('record', this.recordList);
     });
@@ -226,28 +235,31 @@ export class Tab1Page {
     this.labelLast = this.recordList[this.recordList.length - 1].label;
     this.colorLast = this.recordList[this.recordList.length - 1].color;
     // Refresh today display
-    this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    this.calculateEachDayDisplay(timeDayStart);
   }
 
   // Remove record
   async onLabelRevert() {
+    // Get the record this day
+    const timeDayStart: number = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
+    const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
+    let recordCal: {timestamp: number, label: string, color: string}[];
     // Remove
     await this.storageDB.get('record').then(r => {
-      r.pop();
-      // Save the default
-      this.recordList = r.length === 1 ? [{
-        id: 0,
-        timestamp: 0,
-        label: 'default',
-        color: '#05d59e',
-      }] : r;
+      recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
+      const deleteTimestamp = this.arrayGetThePreviousOne(recordCal, this.timeSet).timestamp;
+      // If no record to move beyond the time picked from range, then do nothing.
+      if (deleteTimestamp !== 0) {
+        r.splice(r.indexOf(r.filter((obj: { timestamp: number; }) => obj.timestamp === deleteTimestamp)[0]), 1);
+      }
+      this.recordList = r;
       this.storageDB.set('record', this.recordList);
     });
     // Revert label and color last
     this.labelLast = this.recordList[this.recordList.length - 1].label;
     this.colorLast = this.recordList[this.recordList.length - 1].color;
     // Refresh today display
-    this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    this.calculateEachDayDisplay(timeDayStart);
   }
 
   // Add label
@@ -346,9 +358,9 @@ export class Tab1Page {
     let timeStopCal: number;
     const timeDayStart: number = calDayTimestamp;
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
-    const resultList: {length: number, label: string, color: string, timestamp: number, id: number}[] = [];
+    const resultList: {length: number, label: string, color: string, timestamp: number}[] = [];
     // Get record data via timestamp in range of today [)
-    let recordCal: {id: number, timestamp: number, label: string, color: string}[];
+    let recordCal: {timestamp: number, label: string, color: string}[];
     await this.storageDB.get('record').then(r => {
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
     });
@@ -356,19 +368,19 @@ export class Tab1Page {
     // The situation when one event start before the day calculating and last till that day
     // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
     if (recordCal.some((obj: { timestamp: number; }) => obj.timestamp !== timeDayStart)) {
-      // Find the minimum id
-      const recordHeadItemId: number = recordCal.reduce(
-        (prev, curr) => prev.id < curr.id ? prev : curr).id;
-      // Find the record one before minimum via id
+      // Find the minimum timestamp
+      const recordHeadItemTimestamp: number = recordCal.reduce(
+        (prev, curr) => prev.timestamp < curr.timestamp ? prev : curr).timestamp;
+      // Find the record one before minimum via timestamp
       // Assume the uniqueness of data recorded
-      let recordHeadItem: {id: number, timestamp: number, label: string, color: string};
       await this.storageDB.get('record').then(r => {
-        recordHeadItem = r.filter((obj: { id: number; }) => obj.id === recordHeadItemId - 1)[0];
+        // Find the previous one
+        const recordHeadItem = this.arrayGetThePreviousOne(r, recordHeadItemTimestamp);
+        // Change the record timestamp to today start for calcualte
+        recordHeadItem.timestamp = timeDayStart;
+        // Add the record in the top of record list for calculate
+        recordCal.splice(0, 0, recordHeadItem);
       });
-      // Change the record timestamp to today start for calcualte
-      recordHeadItem.timestamp = timeDayStart;
-      // Add the record in the top of record list for calculate
-      recordCal.splice(0, 0, recordHeadItem);
     }
     // Deal with the bottom
     timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;
@@ -383,11 +395,62 @@ export class Tab1Page {
         label: recordCal[i].label,
         color: recordCal[i].color,
         timestamp: timeDayStart,
-        id: recordCal[i].id,
       });
     }
     // Give the display data list
     this.displayList = resultList;
+  }
+
+  // Find the previous one
+  arrayGetThePreviousOne(list: {timestamp: number, label: string, color: string}[], value: number)
+    : {timestamp: number, label: string, color: string} {
+    const result = list.filter(obj => obj.timestamp < value).sort((prev, curr) => {
+      return prev.timestamp - curr.timestamp;
+    }).reverse()[0];
+    // For the situation which there is no record before time selected by range
+    const defaultResult = {
+      timestamp: 0,
+      label: 'nothing',
+      color: '#808080',
+    };
+    return result ? result : defaultResult;
+  }
+
+  // Find the next one
+  arrayGetTheNextOne(list: {timestamp: number, label: string, color: string}[], value: number)
+    : {timestamp: number, label: string, color: string} {
+    const result = list.filter(obj => obj.timestamp > value).sort((prev, curr) => {
+      return prev.timestamp - curr.timestamp;
+    })[0]; // Notice no reverse
+    // Since this is used to decide if delete the next one, so there would be no problem when it returns default
+    const defaultResult = {
+      timestamp: 0,
+      label: 'nothing',
+      color: '#808080',
+    };
+    return result ? result : defaultResult;
+  }
+
+  // If label added the same with the next one, delete the next one from record
+  arrayRemoveCurrRepeatByLabel(list: {timestamp: number, label: string, color: string}[])
+    : {timestamp: number, label: string, color: string}[] {
+    console.log(list);
+    let labelTemp = '';
+    const deleteTimestampList = [];
+    // Check if repeat
+    list.forEach(obj => {
+      if (labelTemp === obj.label) {
+        deleteTimestampList.push(obj.timestamp);
+      } else {
+        labelTemp = obj.label;
+      }
+    });
+    // Delete repeat via timestamp
+    deleteTimestampList.forEach(x => {
+      list.splice(list.indexOf(list.filter((obj: { timestamp: number; }) => obj.timestamp === x)[0]), 1);
+    });
+    console.log(list);
+    return list;
   }
 
   // Alert handler: presentAlertMultipleButtons

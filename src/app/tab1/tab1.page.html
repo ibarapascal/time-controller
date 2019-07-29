@@ -4,7 +4,7 @@
   <table class="table">
     <tbody>
       <tr>
-        <td style="width:66.6%;"
+        <td style="width:66.66%;"
           [style.border]="recordRngEditingFlg && flashCssFlg ? '1px red solid' : '1px white solid'">
           <div class="dragLabelDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
@@ -50,11 +50,11 @@
             <input type="range"
                    id="rangeTime"
                    class="range"
-                   [style.margin-top]=" propRngStart * lengthRngStandard + 'px'"
-                   [min]="propRngStart * lengthRngStandard"
-                   [max]="propRngEnd * lengthRngStandard"
+                   [style.margin-top]="dateEditingFlg ? 0 : propRngStart * lengthRngStandard + 'px'"
+                   [min]="dateEditingFlg ? 0 : propRngStart * lengthRngStandard"
+                   [max]="dateEditingFlg ? lengthRngStandard : propRngEnd * lengthRngStandard"
                    step="any"
-                   [style.height]="(propRngEnd - propRngStart) * lengthRngStandard + lengthRngPaddingB * 2 + 'px'"
+                   [style.height]="dateEditingFlg ? lengthRngStandard + lengthRngPaddingB * 2 + 'px' : (propRngEnd - propRngStart) * lengthRngStandard + lengthRngPaddingB * 2 + 'px'"
                    [(ngModel)]="lengthTimeSetPosition">
             <div class="absoluteDiv"
                 id="timeDrag"

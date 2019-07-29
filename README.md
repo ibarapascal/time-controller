@@ -236,14 +236,36 @@ await alert.present();
 
   [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
 
+### 20190730 History data edit, Bugfix
 
-### DOING
+- Delete object in object[] via object.attr
 
-- Bugfix
+```javascript
+  list.splice(list.indexOf(list.filter((obj: { timestamp: number; }) => obj.timestamp === x)[0]), 1);
+```
 
-- Date picker
+- Sort object[] via object.attr
+
+```javascript
+  r.sort((prev: { timestamp: number; }, curr: { timestamp: number; }) => {
+    return prev.timestamp - curr.timestamp;
+  });
+```
+
+- Notice .pop(), .splice(), .filter() have returns, do not make such mistake
+
+```javascript
+  // filter out
+  result = XXX.filter();
+  // filter left
+  XXX.filter();
+  result = XXX;
+```
+
 
 ### TODO
+
+- Maybe rewrite most of content later.
 
 - [Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
 
