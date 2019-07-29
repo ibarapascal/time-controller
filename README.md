@@ -262,6 +262,11 @@ await alert.present();
   result = XXX;
 ```
 
+### DOING
+
+- [Ionic Storage not working in real devices](https://forum.ionicframework.com/t/ionic-storage-not-working-in-real-devices/71642/3)
+
+
 ### TODO
 
 - Bugfix: Status refresh between two range input
