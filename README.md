@@ -262,27 +262,80 @@ await alert.present();
   result = XXX;
 ```
 
-### 20190731 Cordova Android deploy, Storage bug fix
+### 20190731 On device debug, Bug fix.
 
-- DOING: [Issus: Ionic storage not working on devices](https://forum.ionicframework.com/t/ionic-storage-not-working-in-real-devices/71642/3)
+#### Summary
 
-  X Solution: [try JSON format manually](https://stackoverflow.com/questions/41316796/ionic-2-ionic-storage-not-working-on-android-device)
+```shell
+ionic serve --devapp
+ionic cordova run android --device -l --debug --verbose
+```
 
-  X Solution: [storage.ready().then(), IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})](https://www.npmjs.com/package/@ionic/storage)
+```html
+chrome://inspect/#devices
+```
 
-  ? Solution: Store data in DB.
+```javascript
+IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['websql', 'indexeddb', 'sqlite']})
 
-- DONE: [Ionic serve --devapp](https://ionicframework.com/docs/appflow/devapp/)
+await this.storageDB.ready().then(async () => {
+      await this.dbInit();
+    }).catch(e => {console.error(e); });
+```
 
-  Download app <Ionic devapp>, run in the same wifi, if facing a time_out problem, [turn off the firewall](https://forum.ionicframework.com/t/ionic-devapp-net-err-connection-timed-out-http-192-168-0-19-8100-devapp-true/114565/6)
+
+#### Details
+
+- DONE: Local: Ionic serve
+
+  Problem: Some bug only appear on device.
+
+  Solution: On device debug.
+
+- DONE: On device via devapp: [ionic serve --devapp](https://ionicframework.com/docs/appflow/devapp/)
+
+  Step: Download app <Ionic devapp>, run in the same wifi, if facing a time_out problem, [turn off the firewall](https://forum.ionicframework.com/t/ionic-devapp-net-err-connection-timed-out-http-192-168-0-19-8100-devapp-true/114565/6)
 
   Problem: [Issus: Got no console log on device once error.](https://forum.ionicframework.com/t/devapp-on-ionic-4-issue-no-console-log/141723/31)
 
   Problem: Storage still not working on device using apk install, while under --devapp on device works well.
 
-  ? Solution: Try to debug using Android Studio.
+  Solution: Try to debug using USB drivers.
 
-- NOTICE: Creat keys in storage before using it!
+- DONE: On device via USB: [ionic cordova run android --device -l --debug --verbose](https://ionic.zone/debug/remote-debug-your-app#android)
+
+  Step:
+
+  1. [Install Android SDK tools: Google USB Driver, check the install position](https://developer.android.com/studio/run/device.html#setting-up)
+
+  2. [Install OEM USB driver to device](https://developer.android.com/studio/run/oem-usb.html)
+
+  3. On the device, open the Settings app, select Developer options, and then enable USB debugging. => [Huawei Step (WTF)](https://jingyan.baidu.com/article/a378c960e87118b3282830bc.html)
+
+  4. For Huawei, turn the USB install need permission off, otherwise (WTF) => Failure [INSTALL_FAILED_ABORTED: User rejected permissions]
+
+  5. Check if your device is ready => [chrome://inspect/](chrome://inspect/#devices).
+  
+  6. Click inspect under ionic to start debug.
+
+  Result: Worked well.
+
+
+- Bugfix: Ionic storage
+
+  ? Issus: [Ionic storage not working on devices](https://forum.ionicframework.com/t/ionic-storage-not-working-in-real-devices/71642/3)
+
+  ? Solution: [try JSON format manually](https://stackoverflow.com/questions/41316796/ionic-2-ionic-storage-not-working-on-android-device)
+
+  ? Solution: [storage.ready().then(), IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})](https://www.npmjs.com/package/@ionic/storage)
+
+  After having done debug on device.
+  
+  1. Creat keys in storage before using it! <= Error: Undefined
+
+  2. Set the setInterval in ngOnInit rather than constructor. <= Error: Undefined
+
+  3. Change the driverOrder from sqlite to websql. <= Could not open database <= more info in [this issus](https://forum.ionicframework.com/t/release-app-can-not-open-connection-to-db/90262)
 
 
 ### TODO

@@ -121,59 +121,78 @@ export class Tab1Page {
     public alertController: AlertController,
     private storageDB: Storage,
     ) {
-      // Refresh every second
-      setInterval(() => {
-        // Synchronize the cursor in range if not in editing
-        if (!this.recordRngEditingFlg) {
-          this.lengthTimeSetPosition = this.propRngEnd * this.lengthRngStandard;
-          this.timeSet = this.ts.getTimestampNow();
-        }
-        // Show title local time in seconds
-        this.ts.showTimeInSeconds('timeNow');
-        // Show drag range time in seconds
-        this.ts.showTimeInSeconds('timeDrag', this.timeSet);
-        // Range start and end proportion
-        this.propRngStart = this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
-            (this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
-        this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
-        // Flash the border display css flag
-        this.flashCssFlg = this.flashCssFlg ? 0 : 1;
-      }, 1000);
-      // Refresh every minute
-      setInterval(() => {
-        // Show record display
-        if (!this.dateEditingFlg) {
-          this.calculateEachDayDisplay(this.ts.getTimestampToday());
-        }
-      }, 60000);
     }
 
   // tslint:disable-next-line: use-life-cycle-interface
   async ngOnInit() {
-    await this.storageDB.ready().then();
+    console.log('Start up');
+    // DB setting
+    await this.storageDB.ready().then(async () => {
+      await this.dbInit();
+    }).catch(e => {console.error(e); });
+    // Refresh
+    this.refreshElementPeriodically();
+    // Refresh today display
+    this.calculateEachDayDisplay(this.ts.getTimestampToday());
+    // Show local date to string in days
+    this.ts.showTimeInDays('dateDrag', this.timeDayStart);
+    // Listen
+    this.listenElementChanges();
+    console.log('Start up complete');
+  }
+
+  async dbInit() {
     // Init label default setting
-    await this.storageDB.set('defaultSetting', JSON.stringify(this.dbdefaultSetting));
-    // // TEST db record data
-    await this.storageDB.set('record', JSON.stringify(this.dbrecord));
-    // await this.storageDB.set('record', JSON.stringify([]));
-    // // TEST db setting
-    await this.storageDB.set('setting', JSON.stringify(this.dbdefaultSetting));
-    // await this.storageDB.set('setting', JSON.stringify([]));
-
-    this.labelList = this.dbdefaultSetting;
-
+    await this.storageDB.set('defaultSetting', JSON.stringify(this.dbdefaultSetting)).catch(e => {console.error(e); });
+    // TEST db record data
+    await this.storageDB.set('record', JSON.stringify(this.dbrecord)).catch(e => {console.error(e); });
+    // TEST db setting
+    await this.storageDB.set('setting', JSON.stringify(this.dbdefaultSetting)).catch(e => {console.error(e); });
+    // Get stored defaut settings
+    await this.storageDB.get('defaultSetting').then(x => {
+      const r = JSON.parse(x);
+      this.labelList = r;
+    }).catch(e => {console.error(e); });
+    // Get stored records
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
       this.recordList = r;
       this.labelLast = r[r.length - 1].label;
       this.colorLast = r[r.length - 1].color;
-    });
+    }).catch(e => {console.error(e); });
+  }
 
-    console.log('Start up');
-    // Refresh today display
-    this.calculateEachDayDisplay(this.ts.getTimestampToday());
-    // Show local date to string in days
-    this.ts.showTimeInDays('dateDrag', this.timeDayStart);
+  // Refresh
+  refreshElementPeriodically() {
+    // Refresh every second
+    setInterval(() => {
+      // Synchronize the cursor in range if not in editing
+      if (!this.recordRngEditingFlg) {
+        this.lengthTimeSetPosition = this.propRngEnd * this.lengthRngStandard;
+        this.timeSet = this.ts.getTimestampNow();
+      }
+      // Show title local time in seconds
+      this.ts.showTimeInSeconds('timeNow');
+      // Show drag range time in seconds
+      this.ts.showTimeInSeconds('timeDrag', this.timeSet);
+      // Range start and end proportion
+      this.propRngStart = this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday() > 0 ?
+          (this.recordList[this.recordList.length - 1].timestamp - this.ts.getTimestampToday()) / 86400 : 0;
+      this.propRngEnd = (this.ts.getTimestampNow() - this.ts.getTimestampToday()) / 86400;
+      // Flash the border display css flag
+      this.flashCssFlg = this.flashCssFlg ? 0 : 1;
+    }, 1000);
+    // Refresh every minute
+    setInterval(() => {
+      // Show record display
+      if (!this.dateEditingFlg) {
+        this.calculateEachDayDisplay(this.ts.getTimestampToday());
+      }
+    }, 60000);
+  }
+
+  // Listen
+  listenElementChanges() {
     // Response the range changing
     document.getElementById('rangeTime').addEventListener('input', () => {
       // Get the setted time from record edit input
@@ -211,7 +230,7 @@ export class Tab1Page {
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
-    });
+    }).catch(e => {console.error(e); });
     // If same with current label, alert, do noting
     // Today
     if ((!this.dateEditingFlg && this.labelLast === labelSelected) ||
@@ -227,7 +246,7 @@ export class Tab1Page {
     await this.storageDB.get('setting').then(x => {
       const r = JSON.parse(x);
       this.labelList = r;
-    });
+    }).catch(e => {console.error(e); });
     await this.storageDB.get('record').then(x => {
       let r = JSON.parse(x);
       // If multiple labels at the same time, alert, do nothing
@@ -249,8 +268,8 @@ export class Tab1Page {
         r = this.arrayRemoveCurrRepeatByLabel(r);
       }
       this.recordList = r;
-      this.storageDB.set('record', JSON.stringify(this.recordList));
-    });
+      this.storageDB.set('record', JSON.stringify(this.recordList)).catch(e => {console.error(e); });
+    }).catch(e => {console.error(e); });
     // Record label and color last (added)
     this.labelLast = this.recordList[this.recordList.length - 1].label;
     this.colorLast = this.recordList[this.recordList.length - 1].color;
@@ -274,8 +293,8 @@ export class Tab1Page {
         r.splice(r.indexOf(r.filter((obj: { timestamp: number; }) => obj.timestamp === deleteTimestamp)[0]), 1);
       }
       this.recordList = r;
-      this.storageDB.set('record', JSON.stringify(this.recordList));
-    });
+      this.storageDB.set('record', JSON.stringify(this.recordList)).catch(e => {console.error(e); });
+    }).catch(e => {console.error(e); });
     // Revert label and color last
     this.labelLast = this.recordList[this.recordList.length - 1].label;
     this.colorLast = this.recordList[this.recordList.length - 1].color;
@@ -290,7 +309,7 @@ export class Tab1Page {
     await this.storageDB.get('setting').then(x => {
       const r = JSON.parse(x);
       this.labelList = r;
-    });
+    }).catch(e => {console.error(e); });
     // Set the label added
     this.labelAdded = label;
     // If the label name inputed is empty, alert, do nothing.
@@ -319,7 +338,7 @@ export class Tab1Page {
       label: this.labelAdded,
       color: this.colorAdded,
     });
-    await this.storageDB.set('setting', JSON.stringify(this.labelList));
+    await this.storageDB.set('setting', JSON.stringify(this.labelList)).catch(e => {console.error(e); });
     this.labelAdded = '';
     this.colorAdded = '';
   }
@@ -353,8 +372,8 @@ export class Tab1Page {
       const r = JSON.parse(x);
       r.splice(r.indexOf(r.filter((obj: { label: string; }) => obj.label === label)[0]), 1);
       this.labelList = r;
-      this.storageDB.set('setting', JSON.stringify(r));
-    });
+      this.storageDB.set('setting', JSON.stringify(r)).catch(e => {console.error(e); });
+    }).catch(e => {console.error(e); });
   }
 
   // Edit label
@@ -374,8 +393,8 @@ export class Tab1Page {
     await this.storageDB.get('defaultSetting').then(x => {
       const r = JSON.parse(x);
       this.labelList = r;
-      this.storageDB.set('setting', JSON.stringify(r));
-    });
+      this.storageDB.set('setting', JSON.stringify(r)).catch(e => {console.error(e); });
+    }).catch(e => {console.error(e); });
   }
 
   // Make common component event processing code
@@ -395,7 +414,7 @@ export class Tab1Page {
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
-    });
+    }).catch(e => {console.error(e); });
     // Deal with the top
     // The situation when one event start before the day calculating and last till that day
     // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
@@ -413,7 +432,7 @@ export class Tab1Page {
         recordHeadItem.timestamp = timeDayStart;
         // Add the record in the top of record list for calculate
         recordCal.splice(0, 0, recordHeadItem);
-      });
+      }).catch(e => {console.error(e); });
     }
     // Deal with the bottom
     timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;

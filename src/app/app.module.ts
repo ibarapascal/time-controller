@@ -24,7 +24,7 @@ import { ColorPickerPageModule } from './module/color-picker/color-picker.module
     IonicModule.forRoot(),
     IonicStorageModule.forRoot({
       name: 'TimeControllerDB',
-      driverOrder: ['sqlite', 'websql', 'indexeddb'],
+      driverOrder: ['websql', 'indexeddb', 'sqlite'],
     }),
     AppRoutingModule,
     ColorPickerPageModule
