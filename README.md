@@ -6,28 +6,61 @@ Keywords: Angular, Ionic, Cordova, Android, Typescript, Bootstrap, Time, Managem
 
 [Try it on your phone (Android 9 apk)](https://github.com/ibarapascal/TimeControllerApp/blob/master/TimeControllerKeikai.apk)
 
-## Introduction
-
-An application which can let you:
-
-  1.Mark when you do what.
-  
-  2.Show record data with a vertical timeline chart.
-  
-  3.Edit the record easily.
-  
-  4.Give full statistic data and chart.
-  
-  5.Save and export the record data to remote storage.
 
 ## Current layout in 2019/07/30
 
 ![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190730012803.jpg)
 
 
-## Timeline
+## Introduction
 
-### 20190715 Environment setting, serve, build, signature.
+An application which can let you:
+
+- Mark when you do what.
+
+- Show record data with a vertical timeline chart.
+  
+- Edit the record easily.
+  
+- (TODO) Give full statistic data and chart.
+  
+- (TODO) Save and export the record data to remote storage.
+
+
+## Timeline link
+
+- [Environment, build, signature](#20190715-Environment-setting,-serve,-build,-signature)
+
+- [Data structure, static Html, import bootstrap](#20190718-Data-structure,-static-Html,-bootstrap-import)
+
+- [Chart handling](#20190721-Calculate-chart-length,-rewrite,-border-situation,-bugfix)
+
+- [Service: timestamp, Update/VersionUp: Angular & Ionic](#20190722-Scroll-bar,-clock-time,-Html-adjust,-Angular-update)
+
+- [Template adjust, chart scale](#20190724-Bugfix,-map-scales,-adjust-template)
+
+- [EventListener](#20190725-Input-range,-range-display,-variables-rename,-bug-fix)
+
+- [setInterval: fontColor, input time drag](#20190726-Drag-time-display-in-real-time,-color-trans,-font color,-color-picker)
+
+- [Module: ColorPicker](#20190727-Color-picker-page-module,-Adjust-template,-Placeholder-Font-Color)
+
+- [Controller: alert, input date drag](#20190728-Alert-controller,-Adjust-template,-Date-picker)
+
+- [Storage](#20190729-Ionic-storage,-Date-picker,-Bugfix)
+
+- [Multidays data processing](#20190730-History-data-edit,-Bugfix)
+
+- [On device debug: devapp and chrome://inspect/](#20190731-On-device-debug,-Bug-fix)
+
+- [TODO](#TODO)
+
+- [Guideline](#Guideline)
+
+
+## Timeline dev record details
+
+### 20190715 Environment setting, serve, build, signature
 
 Install, serve and package
 
@@ -53,7 +86,7 @@ C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1
 Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/intro/deploying/)
 
 
-### 20190718 Data structure, static HTML, bootstrap, the basic process
+### 20190718 Data structure, static Html, bootstrap import
 
 - [Import bootstrap to ionic 4 app](https://stackoverflow.com/questions/53063005/how-can-i-add-and-use-bootstrap-to-an-ionic-4-app)
 
@@ -262,7 +295,7 @@ await alert.present();
   result = XXX;
 ```
 
-### 20190731 On device debug, Bug fix.
+### 20190731 On device debug, Bug fix
 
 #### Summary
 
@@ -282,7 +315,6 @@ await this.storageDB.ready().then(async () => {
       await this.dbInit();
     }).catch(e => {console.error(e); });
 ```
-
 
 #### Details
 
@@ -306,17 +338,17 @@ await this.storageDB.ready().then(async () => {
 
   Step:
 
-  1. [Install Android SDK tools: Google USB Driver, check the install position](https://developer.android.com/studio/run/device.html#setting-up)
+  1.[Install Android SDK tools: Google USB Driver, check the install position](https://developer.android.com/studio/run/device.html#setting-up)
 
-  2. [Install OEM USB driver to device](https://developer.android.com/studio/run/oem-usb.html)
+  2.[Install OEM USB driver to device](https://developer.android.com/studio/run/oem-usb.html)
 
-  3. On the device, open the Settings app, select Developer options, and then enable USB debugging. => [Huawei Step (WTF)](https://jingyan.baidu.com/article/a378c960e87118b3282830bc.html)
+  3.On the device, open the Settings app, select Developer options, and then enable USB debugging. => [Huawei Step (WTF)](https://jingyan.baidu.com/article/a378c960e87118b3282830bc.html)
 
-  4. For Huawei, turn the USB install need permission off, otherwise (WTF) => Failure [INSTALL_FAILED_ABORTED: User rejected permissions]
+  4.For Huawei, turn the USB install need permission off, otherwise (WTF) => Failure [INSTALL_FAILED_ABORTED: User rejected permissions]
 
-  5. Check if your device is ready => [chrome://inspect/](chrome://inspect/#devices).
+  5.Check if your device is ready => [chrome://inspect/](chrome://inspect/#devices).
   
-  6. Click inspect under ionic to start debug.
+  6.Click inspect under ionic to start debug.
 
   Result: Worked well.
 
@@ -327,39 +359,59 @@ await this.storageDB.ready().then(async () => {
 
   ? Solution: [try JSON format manually](https://stackoverflow.com/questions/41316796/ionic-2-ionic-storage-not-working-on-android-device)
 
-  ? Solution: [storage.ready().then(), IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})](https://www.npmjs.com/package/@ionic/storage)
+  ?Bingo Solution: [storage.ready().then(), IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})](https://www.npmjs.com/package/@ionic/storage)
 
   After having done debug on device.
   
-  1. Creat keys in storage before using it! <= Error: Undefined
+  1.Creat keys in storage before using it! <= Error: Undefined
 
-  2. Set the setInterval in ngOnInit rather than constructor. <= Error: Undefined
+  2.Set the setInterval in ngOnInit rather than constructor. <= Error: Undefined
 
-  3. Change the driverOrder from sqlite to websql. <= Could not open database <= more info in [this issus](https://forum.ionicframework.com/t/release-app-can-not-open-connection-to-db/90262)
+  3.Change the driverOrder from sqlite to websql. <= Could not open database <= more info in [this issus](https://forum.ionicframework.com/t/release-app-can-not-open-connection-to-db/90262)
 
 
 ### TODO
 
-- Bugfix: Status refresh between two range input
+- Bug fix:
 
-- Maybe rewrite most of content later.
+  Status refresh between two range input.
 
-- [Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
+- Issus:
 
-```javascript
-@ViewChild('elementId') yourElement:ElementRef;
-this.yourElement.nativeElement.focus());
-```
+  1.Storage data check.
 
-- [Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
+  2.Layout fit.
 
-- Bugfix: 1s match when dragging to the bottom.
+  3.App Android apk name and icon.
 
-- Statistic data charts.
+- Feature:
 
-- Button outer border.
+  1.[Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
 
-- App Android apk name and icon.
+  2.[Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
+
+  3.Statistic data charts.
+
+  4.Button outer border.
+
+  5.Export / import data via csv, etc.
+
+### Guideline
+
+- Handle the TODO
+
+- Rewrite
+
+  1.Global variables
+
+  2.Component chart and range input
+
+  3.Sass
+
+- Release and deploy on Google Play
+
+- More feature
+
 
 
 
