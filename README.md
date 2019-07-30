@@ -27,31 +27,31 @@ An application which can let you:
 - (TODO) Save and export the record data to remote storage.
 
 
-## Timeline link
+## Dev record link
 
-- [Environment, build, signature](#20190715-Environment-setting,-serve,-build,-signature)
+- [Environment, build, signature](#20190715)
 
-- [Data structure, static Html, import bootstrap](#20190718-Data-structure,-static-Html,-bootstrap-import)
+- [Data structure, static Html, import bootstrap](#20190718)
 
-- [Chart handling](#20190721-Calculate-chart-length,-rewrite,-border-situation,-bugfix)
+- [Chart handling](#20190721)
 
-- [Service: timestamp, Update/VersionUp: Angular & Ionic](#20190722-Scroll-bar,-clock-time,-Html-adjust,-Angular-update)
+- [Service: timestamp, Update/VersionUp: Angular & Ionic](#20190722)
 
-- [Template adjust, chart scale](#20190724-Bugfix,-map-scales,-adjust-template)
+- [Template adjust, chart scale](#20190724)
 
-- [EventListener](#20190725-Input-range,-range-display,-variables-rename,-bug-fix)
+- [EventListener](#20190725)
 
-- [setInterval: fontColor, input time drag](#20190726-Drag-time-display-in-real-time,-color-trans,-font color,-color-picker)
+- [setInterval: fontColor, input time drag](#20190726)
 
-- [Module: ColorPicker](#20190727-Color-picker-page-module,-Adjust-template,-Placeholder-Font-Color)
+- [Module: ColorPicker](#20190727)
 
-- [Controller: alert, input date drag](#20190728-Alert-controller,-Adjust-template,-Date-picker)
+- [Controller: alert, input date drag](#20190728)
 
-- [Storage](#20190729-Ionic-storage,-Date-picker,-Bugfix)
+- [Storage](#20190729)
 
-- [Multidays data processing](#20190730-History-data-edit,-Bugfix)
+- [Multidays data processing](#20190730)
 
-- [On device debug: devapp and chrome://inspect/](#20190731-On-device-debug,-Bug-fix)
+- [On device debug: devapp and chrome://inspect/](#20190731)
 
 - [TODO](#TODO)
 
@@ -60,7 +60,8 @@ An application which can let you:
 
 ## Timeline dev record details
 
-### 20190715 Environment setting, serve, build, signature
+### 20190715
+### Environment setting, serve, build, signature
 
 Install, serve and package
 
@@ -86,7 +87,8 @@ C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1
 Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/intro/deploying/)
 
 
-### 20190718 Data structure, static Html, bootstrap import
+### 20190718
+### Data structure, static Html, bootstrap import
 
 - [Import bootstrap to ionic 4 app](https://stackoverflow.com/questions/53063005/how-can-i-add-and-use-bootstrap-to-an-ionic-4-app)
 
@@ -97,7 +99,8 @@ Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/int
 Obj.some(obj => obj.label === label))
 Obj.reduce((prev, curr) => prev.id < curr.id ? prev : curr).id;
 ```
-### 20190721 Calculate chart length, rewrite, border situation, bugfix
+### 20190721
+### Calculate chart length, rewrite, border situation, bugfix
 
  - Bugfix:
 ```javascript
@@ -105,7 +108,8 @@ let xxx = list.filter(...)[index].someLabel,
 let xxx = someValue // list would be changed -> pass value via reference, be cautious
 ```
 
-### 20190722 Scroll bar, clock time, Html adjust, Angular update
+### 20190722
+### Scroll bar, clock time, Html adjust, Angular update
 
 - Adjust the input color selection position.
 
@@ -127,7 +131,8 @@ let xxx = someValue // list would be changed -> pass value via reference, be cau
 npm i @angular-devkit/build-angular @angular-devkit/architect@latest @angular-devkit/core@latest @angular-devkit/schematics@latest
 ```
 
-### 20190724 Bugfix, map scales, adjust template
+### 20190724
+### Bugfix, map scales, adjust template
 
 - get UTC and local time.
 
@@ -151,7 +156,8 @@ move
 ctrl + shift + alt + T
 ```
 
-### 20190725 Input range, range display, variables rename, bug fix
+### 20190725
+### Input range, range display, variables rename, bug fix
 
 - Some slider (input range) tools
 
@@ -166,7 +172,8 @@ document.getElementById('rangeTime').addEventListener('change', () => { //consol
 document.getElementById('rangeTime').addEventListener('input', () => { //console.log('valueChanging');
 ```
 
-### 20190726 Drag time display in real time, color trans, font color, color picker
+### 20190726
+### Drag time display in real time, color trans, font color, color picker
 
 - [Reference position div](https://disenowebakus.net/en/position-div-css)
 
@@ -188,7 +195,8 @@ document.getElementById('rangeTime').addEventListener('input', () => { //console
 
    [3.Ionic: RGB color picker](http://inmagik.github.io/ionic-color-picker/)
 
-### 20190727 Color picker page module, Adjust template, Placeholder Font Color
+### 20190727
+### Color picker page module, Adjust template, Placeholder Font Color
 
 - [Ionic generate command](https://ionicframework.com/docs/cli/commands/generate)
 
@@ -227,7 +235,8 @@ this.popCtrl.getTop().then(p => p.dismiss(YYYYY));
 }
 ```
 
-### 20190728 Alert controller, Adjust template, Date picker
+### 20190728
+### Alert controller, Adjust template, Date picker
 
 - [Alert controller in Ionic](https://ionicframework.com/docs/api/alert)
 
@@ -259,7 +268,8 @@ await alert.present();
 
   => Decide to achieve the event natively.
 
-### 20190729 Ionic storage, Date picker, Bugfix
+### 20190729
+### Ionic storage, Date picker, Bugfix
 
 - Multi days data charts & record edit process.
 
@@ -269,7 +279,8 @@ await alert.present();
 
   [2.Android storage overview](https://developer.android.com/guide/topics/data/data-storage#db)
 
-### 20190730 History data edit, Bugfix
+### 20190730
+### History data edit, Bugfix
 
 - Delete object in object[] via object.attr
 
@@ -295,7 +306,8 @@ await alert.present();
   result = XXX;
 ```
 
-### 20190731 On device debug, Bug fix
+### 20190731
+### On device debug, Bug fix
 
 #### Summary
 
