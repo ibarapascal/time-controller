@@ -262,9 +262,27 @@ await alert.present();
   result = XXX;
 ```
 
-### DOING
+### 20190731 Cordova Android deploy, Storage bug fix
 
-- [Ionic Storage not working in real devices](https://forum.ionicframework.com/t/ionic-storage-not-working-in-real-devices/71642/3)
+- DOING: [Issus: Ionic storage not working on devices](https://forum.ionicframework.com/t/ionic-storage-not-working-in-real-devices/71642/3)
+
+  X Solution: [try JSON format manually](https://stackoverflow.com/questions/41316796/ionic-2-ionic-storage-not-working-on-android-device)
+
+  X Solution: [storage.ready().then(), IonicStorageModule.forRoot({name: '__mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})](https://www.npmjs.com/package/@ionic/storage)
+
+  ? Solution: Store data in DB.
+
+- DONE: [Ionic serve --devapp](https://ionicframework.com/docs/appflow/devapp/)
+
+  Download app <Ionic devapp>, run in the same wifi, if facing a time_out problem, [turn off the firewall](https://forum.ionicframework.com/t/ionic-devapp-net-err-connection-timed-out-http-192-168-0-19-8100-devapp-true/114565/6)
+
+  Problem: [Issus: Got no console log on device once error.](https://forum.ionicframework.com/t/devapp-on-ionic-4-issue-no-console-log/141723/31)
+
+  Problem: Storage still not working on device using apk install, while under --devapp on device works well.
+
+  ? Solution: Try to debug using Android Studio.
+
+- NOTICE: Creat keys in storage before using it!
 
 
 ### TODO

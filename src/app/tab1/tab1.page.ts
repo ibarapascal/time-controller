@@ -150,16 +150,20 @@ export class Tab1Page {
 
   // tslint:disable-next-line: use-life-cycle-interface
   async ngOnInit() {
+    await this.storageDB.ready().then();
     // Init label default setting
-    await this.storageDB.set('defaultSetting', this.dbdefaultSetting);
+    await this.storageDB.set('defaultSetting', JSON.stringify(this.dbdefaultSetting));
     // // TEST db record data
-    // await this.storageDB.set('record', this.dbrecord);
+    await this.storageDB.set('record', JSON.stringify(this.dbrecord));
+    // await this.storageDB.set('record', JSON.stringify([]));
     // // TEST db setting
-    // await this.storageDB.set('setting', this.dbdefaultSetting);
+    await this.storageDB.set('setting', JSON.stringify(this.dbdefaultSetting));
+    // await this.storageDB.set('setting', JSON.stringify([]));
 
     this.labelList = this.dbdefaultSetting;
 
-    await this.storageDB.get('record').then(r => {
+    await this.storageDB.get('record').then(x => {
+      const r = JSON.parse(x);
       this.recordList = r;
       this.labelLast = r[r.length - 1].label;
       this.colorLast = r[r.length - 1].color;
@@ -204,7 +208,8 @@ export class Tab1Page {
     const timeDayStart: number = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
     let recordCal: {timestamp: number, label: string, color: string}[];
-    await this.storageDB.get('record').then(r => {
+    await this.storageDB.get('record').then(x => {
+      const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
     });
     // If same with current label, alert, do noting
@@ -219,8 +224,12 @@ export class Tab1Page {
     // Add
     // At least one item of record existence promised
     // Record timestamp well sorted and continuous promised
-    await this.storageDB.get('setting').then(r => this.labelList = r);
-    await this.storageDB.get('record').then(r => {
+    await this.storageDB.get('setting').then(x => {
+      const r = JSON.parse(x);
+      this.labelList = r;
+    });
+    await this.storageDB.get('record').then(x => {
+      let r = JSON.parse(x);
       // If multiple labels at the same time, alert, do nothing
       if (r.some((obj: { timestamp: number; }) => obj.timestamp === this.timeSet || obj.timestamp === this.timeSet + 1000)) {
         this.pushAlert('multiLabelsOneTime');
@@ -240,7 +249,7 @@ export class Tab1Page {
         r = this.arrayRemoveCurrRepeatByLabel(r);
       }
       this.recordList = r;
-      this.storageDB.set('record', this.recordList);
+      this.storageDB.set('record', JSON.stringify(this.recordList));
     });
     // Record label and color last (added)
     this.labelLast = this.recordList[this.recordList.length - 1].label;
@@ -256,7 +265,8 @@ export class Tab1Page {
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
     let recordCal: {timestamp: number, label: string, color: string}[];
     // Remove
-    await this.storageDB.get('record').then(r => {
+    await this.storageDB.get('record').then(x => {
+      const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
       const deleteTimestamp = this.arrayGetThePreviousOne(recordCal, this.timeSet).timestamp;
       // If no record to move beyond the time picked from range, then do nothing.
@@ -264,7 +274,7 @@ export class Tab1Page {
         r.splice(r.indexOf(r.filter((obj: { timestamp: number; }) => obj.timestamp === deleteTimestamp)[0]), 1);
       }
       this.recordList = r;
-      this.storageDB.set('record', this.recordList);
+      this.storageDB.set('record', JSON.stringify(this.recordList));
     });
     // Revert label and color last
     this.labelLast = this.recordList[this.recordList.length - 1].label;
@@ -277,7 +287,10 @@ export class Tab1Page {
   // Setting may be empty
   // Uniqueness ensured
   async onLabelAdd(event: Event, label: string) {
-    await this.storageDB.get('setting').then(r => this.labelList = r);
+    await this.storageDB.get('setting').then(x => {
+      const r = JSON.parse(x);
+      this.labelList = r;
+    });
     // Set the label added
     this.labelAdded = label;
     // If the label name inputed is empty, alert, do nothing.
@@ -306,7 +319,7 @@ export class Tab1Page {
       label: this.labelAdded,
       color: this.colorAdded,
     });
-    await this.storageDB.set('setting', this.labelList);
+    await this.storageDB.set('setting', JSON.stringify(this.labelList));
     this.labelAdded = '';
     this.colorAdded = '';
   }
@@ -336,10 +349,11 @@ export class Tab1Page {
 
   // Remove label
   async onLabelDelete(label: string) {
-    await this.storageDB.get('setting').then(r => {
+    await this.storageDB.get('setting').then(x => {
+      const r = JSON.parse(x);
       r.splice(r.indexOf(r.filter((obj: { label: string; }) => obj.label === label)[0]), 1);
       this.labelList = r;
-      this.storageDB.set('setting', r);
+      this.storageDB.set('setting', JSON.stringify(r));
     });
   }
 
@@ -357,9 +371,10 @@ export class Tab1Page {
 
   // Set label to default run
   async onLabelDefaultDoing() {
-    await this.storageDB.get('defaultSetting').then(r => {
+    await this.storageDB.get('defaultSetting').then(x => {
+      const r = JSON.parse(x);
       this.labelList = r;
-      this.storageDB.set('setting', r);
+      this.storageDB.set('setting', JSON.stringify(r));
     });
   }
 
@@ -377,7 +392,8 @@ export class Tab1Page {
     const resultList: {length: number, label: string, color: string, timestamp: number}[] = [];
     // Get record data via timestamp in range of today [)
     let recordCal: {timestamp: number, label: string, color: string}[];
-    await this.storageDB.get('record').then(r => {
+    await this.storageDB.get('record').then(x => {
+      const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
     });
     // Deal with the top
@@ -389,7 +405,8 @@ export class Tab1Page {
         (prev, curr) => prev.timestamp < curr.timestamp ? prev : curr).timestamp;
       // Find the record one before minimum via timestamp
       // Assume the uniqueness of data recorded
-      await this.storageDB.get('record').then(r => {
+      await this.storageDB.get('record').then(x => {
+        const r = JSON.parse(x);
         // Find the previous one
         const recordHeadItem = this.arrayGetThePreviousOne(r, recordHeadItemTimestamp);
         // Change the record timestamp to today start for calcualte
