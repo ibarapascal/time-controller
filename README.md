@@ -53,6 +53,8 @@ An application which can let you:
 
 - [On device debug: devapp and chrome://inspect/](#20190731)
 
+- [Bug fix](#20190801)
+
 - [TODO](#TODO)
 
 - [Guideline](#Guideline)
@@ -382,11 +384,23 @@ await this.storageDB.ready().then(async () => {
   3.Change the driverOrder from sqlite to websql. <= Could not open database <= more info in [this issus](https://forum.ionicframework.com/t/release-app-can-not-open-connection-to-db/90262)
 
 
-### TODO
+### 20190801
+### Bug fix
 
 - Bug fix:
 
-  Status refresh between two range input.
+  1.Local DB init fix.
+	
+  OK 2.Change date range and direct click label giving wrong position insert. And wrong label current.
+	
+  OK 3.Days with null record shows white.
+	
+  OK 4.Time range time display keep uncorrect position after date range return to today.  => match time now.
+
+  OK 5.Template adjustment: scroll none, px offset, shining box border
+
+
+### TODO
 
 - Issus:
 

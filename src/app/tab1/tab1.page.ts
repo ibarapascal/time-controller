@@ -167,7 +167,7 @@ export class Tab1Page {
     // Refresh every second
     setInterval(() => {
       // Synchronize the cursor in range if not in editing
-      if (!this.recordRngEditingFlg) {
+      if (!this.recordRngEditingFlg && !this.dateEditingFlg) {
         this.lengthTimeSetPosition = this.propRngEnd * this.lengthRngStandard;
         this.timeSet = this.ts.getTimestampNow();
       }
@@ -193,18 +193,18 @@ export class Tab1Page {
 
   // Listen
   listenElementChanges() {
-    // Response the range changing
+    // Response the time range changing event
     document.getElementById('rangeTime').addEventListener('input', () => {
       // Get the setted time from record edit input
       this.timeSet = this.ts.getTimestampToday()
         - this.rangeDateOffsetUsed * 86400
         + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
-      // TODO Relax condition to fix 1s issue
-      this.recordRngEditingFlg = this.timeSet === this.ts.getTimestampNow() ? 0 : 1;
+      // Check if dragging time
+      this.recordRngEditingFlg = this.timeSet < this.ts.getTimestampNow() + 3 && this.timeSet > this.ts.getTimestampNow() - 3 ? 0 : 1;
       // Show drag range time in seconds
       this.ts.showTimeInSeconds('timeDrag', this.timeSet);
     });
-    // TODO change the rang flag status via date range flag
+    // Response the date range changing event
     document.getElementById('rangeDate').addEventListener('input', () => {
       this.rangeDateOffsetUsed = 30 - this.rangeDateOffset;
       this.dateEditingFlg = this.rangeDateOffsetUsed === 0 ? 0 : 1;
@@ -215,9 +215,14 @@ export class Tab1Page {
       this.calculateEachDayDisplay(this.timeDayStart);
       // From up
       // Get the setted time from record edit input
-      this.timeSet = this.ts.getTimestampToday()
-      - this.rangeDateOffsetUsed * 86400
-      + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
+      if (this.dateEditingFlg) {
+        this.timeSet = this.ts.getTimestampToday()
+        - this.rangeDateOffsetUsed * 86400
+        + Math.floor(this.lengthTimeSetPosition / this.lengthRngStandard * 86400);
+      } else {
+        this.timeSet = this.ts.getTimestampNow();
+        this.recordRngEditingFlg = 0;
+      }
     });
   }
 
@@ -227,16 +232,19 @@ export class Tab1Page {
     const timeDayStart: number = this.ts.getTimestampToday() - this.rangeDateOffsetUsed * 86400;
     const timeDayEnd: number = timeDayStart + 86400; // 60*60*24
     let recordCal: {timestamp: number, label: string, color: string}[];
+    let recordPreviousOneLabel: string;
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
+      recordPreviousOneLabel = recordCal.length === 0
+        ? this.arrayGetThePreviousOne(r, timeDayStart).label
+        : this.arrayGetThePreviousOne(recordCal, this.timeSet).label;
     }).catch(e => {console.error(e); });
     // If same with current label, alert, do noting
     // Today
     if ((!this.dateEditingFlg && this.labelLast === labelSelected) ||
     // History
-      // TODO bugfix: if last day giving label !== 'nothing', add the same label at the top of this day give no alert
-      (this.dateEditingFlg && this.arrayGetThePreviousOne(recordCal, this.timeSet).label === labelSelected)) {
+      (this.dateEditingFlg && recordPreviousOneLabel === labelSelected)) {
       this.pushAlert('currentEventTheSame');
       return;
     }
@@ -255,7 +263,7 @@ export class Tab1Page {
         return;
       }
       r.push({
-        timestamp: this.recordRngEditingFlg ? this.timeSet : this.ts.getTimestampNow(),
+        timestamp: this.timeSet,
         label: labelSelected,
         color: this.labelList.filter(obj => obj.label === labelSelected)[0].color,
       });
@@ -315,12 +323,10 @@ export class Tab1Page {
     // If the label name inputed is empty, alert, do nothing.
     if (!this.labelAdded) {
       this.pushAlert('inputLabelNull');
-      // TODO give focus to input
       return;
     // If The label name inputed exist, alert, do nothing.
     } else if (this.labelList.some(obj => obj.label === this.labelAdded)) { // if setting is empty, there is no error.
       this.pushAlert('inputLabelExist');
-      // TODO give focus to input
       return;
     }
     // Show the color picker template and set the color selected.
@@ -411,43 +417,38 @@ export class Tab1Page {
     const resultList: {length: number, label: string, color: string, timestamp: number}[] = [];
     // Get record data via timestamp in range of today [)
     let recordCal: {timestamp: number, label: string, color: string}[];
+    let recordHeadItem: {label: string, color: string, timestamp: number};
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
+      recordHeadItem = recordCal.length === 0
+        ? this.arrayGetThePreviousOne(r, timeDayStart)
+        : this.arrayGetThePreviousOne(r, recordCal.reduce((prev, curr) => prev.timestamp < curr.timestamp ? prev : curr).timestamp);
     }).catch(e => {console.error(e); });
     // Deal with the top
     // The situation when one event start before the day calculating and last till that day
     // Noticed that we assume there would always be a default record item with timestamp 1970, so it would be added
-    if (recordCal.some((obj: { timestamp: number; }) => obj.timestamp !== timeDayStart)) {
-      // Find the minimum timestamp
-      const recordHeadItemTimestamp: number = recordCal.reduce(
-        (prev, curr) => prev.timestamp < curr.timestamp ? prev : curr).timestamp;
-      // Find the record one before minimum via timestamp
-      // Assume the uniqueness of data recorded
-      await this.storageDB.get('record').then(x => {
-        const r = JSON.parse(x);
-        // Find the previous one
-        const recordHeadItem = this.arrayGetThePreviousOne(r, recordHeadItemTimestamp);
-        // Change the record timestamp to today start for calcualte
-        recordHeadItem.timestamp = timeDayStart;
-        // Add the record in the top of record list for calculate
-        recordCal.splice(0, 0, recordHeadItem);
-      }).catch(e => {console.error(e); });
+    if (recordCal.length === 0 || recordCal.some((obj: { timestamp: number; }) => obj.timestamp !== timeDayStart)) {
+      // Change the record timestamp to today start for calcualte
+      recordHeadItem.timestamp = timeDayStart;
+      // Add the record in the top of record list for calculate
+      recordCal.splice(0, 0, recordHeadItem);
     }
-    // Deal with the bottom
-    timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;
-    // Calculate
-    for (let i = 0; i < recordCal.length; i++) {
-      const timeStart: number = recordCal[i].timestamp;
-      const timeEnd: number = i === recordCal.length - 1 ? timeStopCal : recordCal[i + 1].timestamp;
-      resultList.push({
-        // TODO Attention result 0 posibility, check if affected in HTML
-        // Giving more precious calculate results than Math.floor
-        length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthRngStandard).toFixed(2)),
-        label: recordCal[i].label,
-        color: recordCal[i].color,
-        timestamp: timeDayStart,
-      });
+    if (recordCal.length !== 0) {
+      // Deal with the bottom
+      timeStopCal = timeNow >= timeDayStart && timeNow < timeDayEnd ? timeNow : timeDayEnd;
+      // Calculate
+      for (let i = 0; i < recordCal.length; i++) {
+        const timeStart: number = recordCal[i].timestamp;
+        const timeEnd: number = i === recordCal.length - 1 ? timeStopCal : recordCal[i + 1].timestamp;
+        resultList.push({
+          // Giving more precious calculate results than Math.floor
+          length: parseFloat(((timeEnd - timeStart) / 86400 * this.lengthRngStandard).toFixed(2)),
+          label: recordCal[i].label,
+          color: recordCal[i].color,
+          timestamp: timeDayStart,
+        });
+      }
     }
     // Give the display data list
     this.displayList = resultList;

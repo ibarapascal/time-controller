@@ -1,11 +1,8 @@
 <ion-content [scrollEvents]="true">
-  <!-- Summary the css style later -->
-  <!-- Achieve first -->
   <table class="table">
     <tbody>
       <tr>
-        <td style="width:66.66%;"
-          [style.border]="recordRngEditingFlg && flashCssFlg ? '1px red solid' : '1px white solid'">
+        <td style="width:66.66%;">
           <div class="dragLabelDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
               [style.padding-top]="lengthRngPaddingB + 'px'"
@@ -26,9 +23,9 @@
           </div>
           <div class="absoluteDiv"
                 id="dateDrag"
-                [style.top]="rangeDateOffset * 20 + 'px'">
+                [style.top]="rangeDateOffset * 20 + 'px'"
+                [style.left]="'0px'">
           </div>
-          <!-- Adjust offset value: 2px -->
           <div class="chartDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
               [style.padding-top]="lengthRngPaddingA + 'px'"
@@ -65,13 +62,12 @@
         <td align="center" style="position: relative; padding-left:0px;">
           <div id="timeNow" class="calendarTime"></div>
           <div *ngIf="labelList.length">
-            <!-- TODO drag and drop -->
             <div *ngFor="let item of labelList" style="margin-bottom:6px">
               <button type="button" class="btn btn-primary customLabel"
                 [style.background-color]="item.color"
                 [style.width]="labelEditingFlg ? '80%' : '100%'"
                 [style.color]="item.color && this.cs.checkIfFontColorToWhite(item.color) ? 'white' : 'black'"
-                [style.border]="item.label === labelLast && !labelEditingFlg && flashCssFlg ? '2px solid ' + item.color : '2px solid white'"
+                [style.border]="item.label === labelLast && !labelEditingFlg && !dateEditingFlg && flashCssFlg ? '2px solid ' + item.color : '2px solid white'"
                 (click)="onLabelClick(item.label)">
                 {{item.label}}
               </button>
@@ -120,7 +116,7 @@
         </td>
         <td style="text-align:right; padding-top:0px; padding-bottom:0px;">
           <p style="height:18px; margin:0px; font-size:1em">Kei Kai</p>
-          <p style="height:18px; margin:0px; font-size:0.75em">2019/07/31</p>
+          <p style="height:18px; margin:0px; font-size:0.75em">2019/08/01</p>
         </td>
       </tr>
     </tbody>
