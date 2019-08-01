@@ -9,7 +9,7 @@ Keywords: Angular, Ionic, Cordova, Android, Typescript, Bootstrap, Time, Managem
 
 ## Current layout in 2019/07/30
 
-![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190730012803.jpg)
+![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190802012002.jpg)
 
 
 ## Introduction
@@ -400,6 +400,8 @@ await this.storageDB.ready().then(async () => {
   OK 5.Template adjustment: scroll none, px offset, shining box border
 
 - Delete useless comment
+
+- Package
 
 
 ### TODO

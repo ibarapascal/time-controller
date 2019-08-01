@@ -124,7 +124,11 @@ export class Tab1Page {
     try {
       await this.storageDB.get('setting').then(x => {
         const r = JSON.parse(x);
-        this.labelList = r;
+        if (r) {
+          this.labelList =  r;
+        } else {
+          throw new Error('Setting return null.');
+        }
       });
     } catch {
       this.labelList = this.defaultSetting;
@@ -375,8 +379,13 @@ export class Tab1Page {
   }
 
   // Set label to default
-  onLabelDefault() {
-    this.pushAlert('makeSureToDefaultLabel');
+  async onLabelDefault() {
+    await this.storageDB.get('setting').then(x => {
+      const r = JSON.parse(x);
+      if (!r) {
+        this.pushAlert('makeSureToDefaultLabel');
+      }
+    });
   }
 
   // Set label to default run
