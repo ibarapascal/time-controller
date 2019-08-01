@@ -64,7 +64,7 @@ export class Tab1Page {
   // length full
   lengthRngFull = this.lengthRngStandard * 25 / 24;
 
-  dbdefaultSetting = [{
+  defaultSetting = [{
     label: 'work',
     color: '#e45a33',
   }, {
@@ -84,35 +84,11 @@ export class Tab1Page {
     color: '#808080',
   }];
 
-  dbrecord = [{
+  defaultStorage = {
     timestamp: 0,
     label: 'nothing',
     color: '#808080',
-  }, {
-    timestamp: this.ts.getTimestampToday() - 32000,
-    label: 'others',
-    color: '#4488ff',
-  }, {
-    timestamp: this.ts.getTimestampToday() - 16000,
-    label: 'work',
-    color: '#e45a33',
-  }, {
-    timestamp: this.ts.getTimestampToday() - 8000,
-    label: 'study',
-    color: '#fde84e',
-  }, {
-    timestamp: this.ts.getTimestampToday() - 4000,
-    label: 'play',
-    color: '#9ac53e',
-  }, {
-    timestamp: this.ts.getTimestampToday() + 1000,
-    label: 'others',
-    color: '#4488ff',
-  }, {
-    timestamp: this.ts.getTimestampToday() + 2000,
-    label: 'sleep',
-    color: '#06394a',
-  }];
+  };
 
   constructor(
     private ts: TimestampService,
@@ -143,23 +119,32 @@ export class Tab1Page {
 
   async dbInit() {
     // Init label default setting
-    await this.storageDB.set('defaultSetting', JSON.stringify(this.dbdefaultSetting)).catch(e => {console.error(e); });
-    // TEST db record data
-    await this.storageDB.set('record', JSON.stringify(this.dbrecord)).catch(e => {console.error(e); });
-    // TEST db setting
-    await this.storageDB.set('setting', JSON.stringify(this.dbdefaultSetting)).catch(e => {console.error(e); });
-    // Get stored defaut settings
-    await this.storageDB.get('defaultSetting').then(x => {
-      const r = JSON.parse(x);
-      this.labelList = r;
-    }).catch(e => {console.error(e); });
+    await this.storageDB.set('defaultSetting', JSON.stringify(this.defaultSetting)).catch(e => {console.error(e); });
+    // Get stored setting
+    try {
+      await this.storageDB.get('setting').then(x => {
+        const r = JSON.parse(x);
+        this.labelList = r;
+      });
+    } catch {
+      this.labelList = this.defaultSetting;
+      await this.storageDB.set('setting', JSON.stringify(this.defaultSetting)).catch(e => {console.error(e); });
+    }
     // Get stored records
-    await this.storageDB.get('record').then(x => {
-      const r = JSON.parse(x);
-      this.recordList = r;
-      this.labelLast = r[r.length - 1].label;
-      this.colorLast = r[r.length - 1].color;
-    }).catch(e => {console.error(e); });
+    try {
+      await this.storageDB.get('record').then(x => {
+        const r = JSON.parse(x);
+        this.recordList = r;
+        this.labelLast = r[r.length - 1].label;
+        this.colorLast = r[r.length - 1].color;
+      });
+    } catch {
+      const dbrecord = [this.defaultStorage];
+      this.recordList = dbrecord;
+      this.labelLast = this.defaultStorage.label;
+      this.colorLast = this.defaultStorage.color;
+      await this.storageDB.set('record', JSON.stringify(dbrecord)).catch(e => {console.error(e); });
+    }
   }
 
   // Refresh
@@ -461,12 +446,7 @@ export class Tab1Page {
       return prev.timestamp - curr.timestamp;
     }).reverse()[0];
     // For the situation which there is no record before time selected by range
-    const defaultResult = {
-      timestamp: 0,
-      label: 'nothing',
-      color: '#808080',
-    };
-    return result ? result : defaultResult;
+    return result ? result : this.defaultStorage;
   }
 
   // Find the next one
@@ -476,12 +456,7 @@ export class Tab1Page {
       return prev.timestamp - curr.timestamp;
     })[0]; // Notice no reverse
     // Since this is used to decide if delete the next one, so there would be no problem when it returns default
-    const defaultResult = {
-      timestamp: 0,
-      label: 'nothing',
-      color: '#808080',
-    };
-    return result ? result : defaultResult;
+    return result ? result : this.defaultStorage;
   }
 
   // If label added the same with the next one, delete the next one from record

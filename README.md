@@ -389,7 +389,7 @@ await this.storageDB.ready().then(async () => {
 
 - Bug fix:
 
-  1.Local DB init fix.
+  OK 1.Local DB init fix.
 	
   OK 2.Change date range and direct click label giving wrong position insert. And wrong label current.
 	
@@ -398,6 +398,8 @@ await this.storageDB.ready().then(async () => {
   OK 4.Time range time display keep uncorrect position after date range return to today.  => match time now.
 
   OK 5.Template adjustment: scroll none, px offset, shining box border
+
+- Delete useless comment
 
 
 ### TODO
