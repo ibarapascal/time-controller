@@ -65,22 +65,31 @@ export class Tab1Page {
   lengthRngFull = this.lengthRngStandard * 25 / 24;
 
   defaultSetting = [{
-    label: 'work',
+    label: 'Work',
     color: '#e45a33',
   }, {
-    label: 'study',
-    color: '#fde84e',
+    label: 'Code',
+    color: '#ef486e',
   }, {
-    label: 'play',
-    color: '#9ac53e',
-  }, {
-    label: 'others',
-    color: '#4488ff',
-  }, {
-    label: 'sleep',
+    label: 'Sleep',
     color: '#06394a',
   }, {
-    label: 'nothing',
+    label: 'Trans',
+    color: '#ffd165',
+  }, {
+    label: 'NaN',
+    color: '#9ac53e',
+  }, {
+    label: 'Play',
+    color: '#05d59e',
+  }, {
+    label: 'Sport',
+    color: '#1089b1',
+  }, {
+    label: 'Temp',
+    color: '#5bbfea',
+  }, {
+    label: 'Nothing',
     color: '#808080',
   }];
 
@@ -379,13 +388,8 @@ export class Tab1Page {
   }
 
   // Set label to default
-  async onLabelDefault() {
-    await this.storageDB.get('setting').then(x => {
-      const r = JSON.parse(x);
-      if (!r) {
-        this.pushAlert('makeSureToDefaultLabel');
-      }
-    });
+  onLabelDefault() {
+    this.pushAlert('makeSureToDefaultLabel');
   }
 
   // Set label to default run
