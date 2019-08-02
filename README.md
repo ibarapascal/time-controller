@@ -2,14 +2,14 @@
 
 Keywords: Angular, Ionic, Cordova, Android, Typescript, Bootstrap, Time, Management
 
-[Try it online (stackblitz.com)](https://stackblitz.com/github/ibarapascal/TimeControllerApp)
+[Try it online (stackblitz.com)](https://stackblitz.com/github/ibarapascal/time-controller)
 
-[Try it on your phone (Android 9 apk)](https://github.com/ibarapascal/TimeControllerApp/blob/master/TimeControllerKeikai.apk)
+[Try it on your phone (Android 9 apk)](https://github.com/ibarapascal/time-controller/blob/master/TimeControllerKeikai.apk)
 
 
 ## Current layout in 2019/07/30
 
-![Current layout img](https://raw.githubusercontent.com/ibarapascal/TimeControllerApp/master/resources/devScreenshot/screenshot20190802012002.jpg)
+![Current layout img](https://raw.githubusercontent.com/ibarapascal/time-controller/master/resources/devScreenshot/screenshot20190802012002.jpg)
 
 
 ## Introduction
@@ -71,7 +71,7 @@ npm, Ionic, Cordova, Angular, Android Studio, Android SDK
 
 ```shell
 npm install -g ionic cordova
-cd TimeController
+cd time-controller
 ionic serve
 ionic cordova build android --prod --release
 First time: keytool -genkey -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-alias
@@ -83,7 +83,7 @@ C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1\apksigner verif
 
 Path before SDK tools and apk:
 ```shell
-C:\WorkPlace\Github\WorkRep\TimeController\platforms\android\app\build\outputs\apk\release
+C:\WorkPlace\Github\WorkRep\time-controller\platforms\android\app\build\outputs\apk\release
 C:\Users\JINGJIAWEI\AppData\Local\Android\Sdk\build-tools\29.0.1
 ```
 Reference info [Ionic document deploying](https://ionicframework.com/docs/v3/intro/deploying/)
