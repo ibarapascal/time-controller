@@ -4,6 +4,7 @@ import { PopoverController, AlertController } from '@ionic/angular';
 import { ColorPickerPage } from '../module/color-picker/color-picker.page';
 import { ColorService } from '../service/colorService';
 import { Storage } from '@ionic/storage';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-tab1',
@@ -99,12 +100,15 @@ export class Tab1Page {
     color: '#808080',
   };
 
+  fileName = 'TimeControllerStorage.json';
+
   constructor(
     private ts: TimestampService,
     private cs: ColorService, // Notice only used in html would prompt 'declared but never read'
     public pop: PopoverController,
     public alertController: AlertController,
     private storageDB: Storage,
+    public file: File,
     ) {
     }
 
@@ -129,6 +133,10 @@ export class Tab1Page {
   async dbInit() {
     // Init label default setting
     await this.storageDB.set('defaultSetting', JSON.stringify(this.defaultSetting)).catch(e => {console.error(e); });
+    await this.initStorageSetting();
+  }
+
+  async initStorageSetting() {
     // Get stored setting
     try {
       await this.storageDB.get('setting').then(x => {
@@ -184,7 +192,7 @@ export class Tab1Page {
     setInterval(() => {
       // Show record display
       if (!this.dateEditingFlg) {
-        this.calculateEachDayDisplay(this.ts.getTimestampToday());
+        this.calculateEachDayDisplay(this.timeDayStart);
       }
     }, 60000);
   }
@@ -492,6 +500,40 @@ export class Tab1Page {
     return list;
   }
 
+  // Export
+  onClickExport() {
+    this.pushAlert('areYouSureToExport');
+  }
+  async writeJSON() {
+    const storage = {
+      setting: Object,
+      record: Object,
+    };
+    await this.storageDB.get('setting').then(x => {
+      storage.setting = JSON.parse(x); });
+    await this.storageDB.get('record').then(x => {
+      storage.record = JSON.parse(x); });
+    await this.file.writeFile(this.file.externalDataDirectory, this.fileName, JSON.stringify(storage), {replace: true});
+  }
+
+  // Import
+  onClickImport() {
+    this.pushAlert('areYouSureToImport');
+  }
+  async readJSON() {
+    let storage = {
+      setting: Object,
+      record: Object,
+    };
+    await this.file.readAsBinaryString(this.file.externalDataDirectory, this.fileName).then(data => storage = JSON.parse(data));
+    await this.storageDB.set('setting', JSON.stringify(storage.setting)).catch(e => {console.error(e); });
+    await this.storageDB.set('record', JSON.stringify(storage.record)).catch(e => {console.error(e); });
+    // Reinit the local variables
+    await this.initStorageSetting();
+    // Rebuild chart
+    this.calculateEachDayDisplay(this.timeDayStart);
+  }
+
   // Alert handler: presentAlertMultipleButtons
   async pushAlert(alertId: string) {
     switch (alertId) {
@@ -597,6 +639,58 @@ export class Tab1Page {
             cssClass: 'secondary',
             handler: () => {
               this.onLabelDefaultDoing();
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }, {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // Confirm to export
+      case('areYouSureToExport'): {
+        const alert = await this.alertController.create({
+          header: 'Confirming, are you really want to do this?',
+          subHeader: 'On click export button',
+          message: 'The local storage file would be changed. Please confirm.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'confirm',
+            cssClass: 'secondary',
+            handler: () => {
+              this.writeJSON();
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }, {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Alert confirmed: ' + alertId);
+            }
+          }]
+        });
+        await alert.present();
+        break;
+      }
+      // Confirm to impot
+      case('areYouSureToImport'): {
+        const alert = await this.alertController.create({
+          header: 'Confirming, are you really want to do this?',
+          subHeader: 'On click import button',
+          message: 'The local storage DB data would be changed. Please confirm.',
+          buttons: [{
+            text: 'Confirm',
+            role: 'confirm',
+            cssClass: 'secondary',
+            handler: () => {
+              this.readJSON();
               console.log('Alert confirmed: ' + alertId);
             }
           }, {

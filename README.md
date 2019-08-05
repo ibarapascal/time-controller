@@ -55,9 +55,9 @@ An application which can let you:
 
 - [Bug fix](#20190801)
 
-- [TODO](#TODO)
+- [Export / import data via file](#20190805)
 
-- [Guideline](#Guideline)
+- [TODO](#TODO)
 
 
 ## Timeline dev record details
@@ -403,16 +403,20 @@ await this.storageDB.ready().then(async () => {
 
 - Package
 
+### 20190805
+### Export / import data via file
+
+- [Ionic 4 write file](https://stackoverflow.com/questions/51215920/writing-a-json-file-in-ionic/54531852#54531852)
+
+```javascript
+import { File } from '@ionic-native/file/ngx'; // OK
+import { File } from '@ionic-native/file'; // NG
+```
+
+- [File location](https://github.com/apache/cordova-plugin-file)
+
 
 ### TODO
-
-- Issus:
-
-  1.Storage data check.
-
-  2.Layout fit.
-
-  3.App Android apk name and icon.
 
 - Feature:
 
@@ -424,12 +428,6 @@ await this.storageDB.ready().then(async () => {
 
   4.Button outer border.
 
-  5.Export / import data via csv, etc.
-
-### Guideline
-
-- Handle the TODO
-
 - Rewrite
 
   1.Global variables
@@ -439,8 +437,6 @@ await this.storageDB.ready().then(async () => {
   3.Sass
 
 - Release and deploy on Google Play
-
-- More feature
 
 
 

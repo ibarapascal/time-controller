@@ -114,9 +114,13 @@
           style="background-color:black;"
           (click)="onLabelRevert()">Revert</button>
         </td>
-        <td style="text-align:right; padding-top:0px; padding-bottom:0px;">
-          <p style="height:18px; margin:0px; font-size:1em">Kei Kai</p>
-          <p style="height:18px; margin:0px; font-size:0.75em">2019/08/01</p>
+        <td style="text-align:right; padding:0px;">
+          <button type="button" class="btn btn-primary customLabel"
+          style="background-color:gray; width:50%;"
+          (click)="onClickExport()">Exp</button>
+          <button type="button" class="btn btn-primary customLabel"
+          style="background-color:gray; width:50%;"
+          (click)="onClickImport()">Imp</button>
         </td>
       </tr>
     </tbody>
