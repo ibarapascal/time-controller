@@ -57,6 +57,8 @@ An application which can let you:
 
 - [Export / import data via file](#20190805)
 
+- [Statistic chart using canvas](#20190807)
+
 - [TODO](#TODO)
 
 
@@ -415,6 +417,41 @@ import { File } from '@ionic-native/file'; // NG
 
 - [File location](https://github.com/apache/cordova-plugin-file)
 
+### 20190807
+### Statistic chart
+
+- [Canvas chart in Angular](https://canvasjs.com/angular-charts/)
+
+```javascript
+  chartRender() {
+    const chart = new CanvasJS.Chart('chartContainer', {
+      animationEnabled: true,
+      exportEnabled: false,
+      title: {
+        text: 'Statistic chart'
+      },
+      data: [{
+        type: 'pie',
+        showInLegend: true,
+        toolTipContent: '<b>{name}</b>: ${y} (#percent%)',
+        indexLabel: '{name} - #percent%',
+        dataPoints: this.renderDataList,
+      }]
+    });
+    chart.render();
+  }
+```
+- [Canvas import using canvas.min.js](https://stackoverflow.com/questions/51034968/canvas-js-issue-with-angular5)
+
+
+### DOING
+
+- Date select range
+
+- Tab layout adjust
+
+- Refresh with range change and page display
+
 
 ### TODO
 
@@ -424,9 +461,7 @@ import { File } from '@ionic-native/file'; // NG
 
   2.[Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
-  3.Statistic data charts.
-
-  4.Button outer border.
+  3.Button outer border.
 
 - Rewrite
 
