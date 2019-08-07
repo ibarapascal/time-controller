@@ -22,9 +22,9 @@ An application which can let you:
   
 - Edit the record easily.
   
-- (TODO) Give full statistic data and chart.
+- Give full statistic data and chart.
   
-- (TODO) Save and export the record data to remote storage.
+- Save and export the record data to remote storage.
 
 
 ## Dev record link
@@ -460,6 +460,11 @@ ionViewDidLeave() {} // A
 
 - Bug fix
 
+```javascript
+this.timeoffset = new Date().getTimezoneOffset() * 60;
+this.timeStart = this.dateStart ? Math.floor(Date.parse(this.dateStart) / 1000  + this.timeoffset) : 0;
+```
+
 - Template adjustment
 
 
@@ -467,17 +472,18 @@ ionViewDidLeave() {} // A
 
 - Feature:
 
-  1.[Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
+  1.Restore the storage json file into external position.
 
   2.[Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
-  3.Button css.
+  3.Button css refer to [Zhihu Dalao](https://zhuanlan.zhihu.com/p/76332099)
 
-  4.Background
+  4.Date picker default, chart hours, selectable options.
 
-  5.Click to copy.
+  5.Contact page: Click to copy & send email.
 
-  6.Click to send email.
+  6.[Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
+
 
 - Rewrite
 
