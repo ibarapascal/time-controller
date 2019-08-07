@@ -27,10 +27,22 @@ export class Tab2Page {
     y: number,
     color: string,
   }> = [];
+  // time zone offset in seconds
+  timeoffset: number;
   // Select start time timestamp
   timeStart: number;
-  // Select end time timestamp // TODO Remember to add a day for [] selection
+  // Select start date
+  dateStart: string;
+  // Select end time timestamp
   timeEnd: number;
+  // Select end date
+  dateEnd: string;
+  // Today time timestamp
+  timeToday: number;
+  // Today date
+  dateToday: string;
+  // Animation of chart flag
+  animationChartFlg: boolean;
 
   constructor(
     private ts: TimestampService,
@@ -39,7 +51,29 @@ export class Tab2Page {
 
   // tslint:disable-next-line: use-life-cycle-interface
   async ngOnInit() {
-    // TODO run every time page display from router
+    // Get time zone offset
+    this.timeoffset = new Date().getTimezoneOffset() * 60;
+    // Get time today
+    this.timeToday = this.ts.getTimestampToday();
+    this.dateToday = this.ts.showTimeInYYYYMMDD(this.timeToday);
+    // Init time range, notice only the first time loading
+    this.timeStart = this.ts.getTimestampToday() - 86400 * 29;
+    this.timeEnd = this.timeToday;
+  }
+
+  async ionViewWillEnter() {
+    // Animation
+    this.animationChartFlg = true;
+    // Init the whole process
+    await this.initDataAndRender();
+  }
+
+  async initDataAndRender() {
+    // Get time zone offset
+    this.timeoffset = new Date().getTimezoneOffset() * 60;
+    // Get time today
+    this.timeToday = this.ts.getTimestampToday();
+    this.dateToday = this.ts.showTimeInYYYYMMDD(this.timeToday);
     // Get the data record from storage
     await this.storageDB.get('record').then(x => {
       const r = JSON.parse(x);
@@ -50,10 +84,19 @@ export class Tab2Page {
       const r = JSON.parse(x);
       this.settingList = r;
     }).catch(e => {console.error(e); });
-    console.log('Page 2 init.');
-    // Init time range
-    this.timeStart = 0;
-    this.timeEnd = this.ts.getTimestampNow();
+    // Calculate render data
+    this.processData();
+    // ngOnInit complete
+    this.chartRender();
+  }
+
+  onDateChanged() {
+    // Format YYYY-MM-DD
+    this.dateStart = this.dateStart ? this.dateStart.slice(0, 10) : '';
+    this.dateEnd = this.dateEnd ? this.dateEnd.slice(0, 10) : '';
+    // Transfer YYYY-MM-DD to timestamp
+    this.timeStart = this.dateStart ? Math.floor(Date.parse(this.dateStart) / 1000  + this.timeoffset) : 0;
+    this.timeEnd = this.dateEnd ? Math.floor(Date.parse(this.dateEnd) / 1000 + this.timeoffset) : this.timeToday;
     // Calculate render data
     this.processData();
     // ngOnInit complete
@@ -62,10 +105,10 @@ export class Tab2Page {
 
   chartRender() {
     const chart = new CanvasJS.Chart('chartContainer', {
-      animationEnabled: true,
+      animationEnabled: this.animationChartFlg,
       exportEnabled: false,
       title: {
-        text: 'Statistic chart'
+        text: 'Statistic Chart'
       },
       data: [{
         type: 'pie',
@@ -76,15 +119,17 @@ export class Tab2Page {
       }]
     });
     chart.render();
+    this.renderDataList = [];
+    this.animationChartFlg = false;
   }
 
   processData() {
     // Select the calculate range
     const selectRecord = JSON.parse(JSON.stringify(
-      this.recordList.filter(record => record.timestamp >= this.timeStart && record.timestamp <= this.timeEnd)));
+      this.recordList.filter(record => record.timestamp >= this.timeStart && record.timestamp <= this.timeEnd + 86400)));
     selectRecord.forEach((item: { timestamp: number; }, i: number) => {
       // Default label don't calculate
-      if (i !== 0 && selectRecord[i - 1].label !== 'nothing') {
+      if (i !== 0 && selectRecord[i - 1].label !== 'nothing' && selectRecord[i - 1].label !== 'Nothing') {
         // Calculat the timestamp delta value
         const timeDelta = item.timestamp - selectRecord[i - 1].timestamp;
         // If the record label doesn't exist in current setting, giving label 'others'

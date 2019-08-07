@@ -1,24 +1,35 @@
-<ion-content>
+<ion-content style="position: fixed">
   <div id="chartContainer" style="margin-top:20px; height: 300px; width: 100%;"></div>
-  <div> </div>
   <ion-item>
+    {{(timeEnd - timeStart) / 86400 + 1}} day(s) calculating
+  </ion-item>
+  <!-- <ion-item>
     <ion-range id="dual-range" dual-knobs pin color="dark" style="padding-top:5px;padding-bottom:5px;">
       <ion-icon slot="start" size="small" name="brush"></ion-icon>
       <ion-icon slot="end" name="brush"></ion-icon>
     </ion-range>
+  </ion-item> -->
+  <ion-item>
+    <ion-datetime displayFormat="YYYY/MM/DD"
+                  id="inputDateStart"
+                  placeholder="Select Start Date"
+                  [max]="dateEnd ? dateEnd : dateToday"
+                  [min]="'1970-01-01'"
+                  [(ngModel)]="dateStart"
+                  (ionChange)="onDateChanged()"></ion-datetime>
   </ion-item>
   <ion-item>
-    Start Date
+    <ion-datetime displayFormat="YYYY/MM/DD"
+                  id="inputDateEnd"
+                  placeholder="Select End Date"
+                  [min]="dateStart ? dateStart : '1970-01-01'"
+                  [max]="dateToday"
+                  [(ngModel)]="dateEnd"
+                  (ionChange)="onDateChanged()"></ion-datetime>
   </ion-item>
   <ion-item>
-    End Date
-  </ion-item>
-  <ion-item>
-    Other Display Data
+    XXX
     <ion-list lines="none">
-        <ion-list-header>
-          <ion-label>Resources</ion-label>
-        </ion-list-header>
         <ion-item href="https://ionicframework.com/docs/">
           <ion-icon slot="start" color="medium" name="book"></ion-icon>
           <ion-label>Ionic Documentation</ion-label>

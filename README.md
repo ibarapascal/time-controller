@@ -57,7 +57,7 @@ An application which can let you:
 
 - [Export / import data via file](#20190805)
 
-- [Statistic chart using canvas](#20190807)
+- [Statistic chart, navigating lifecycle event](#20190807)
 
 - [TODO](#TODO)
 
@@ -342,7 +342,7 @@ await this.storageDB.ready().then(async () => {
 
 - DONE: On device via devapp: [ionic serve --devapp](https://ionicframework.com/docs/appflow/devapp/)
 
-  Step: Download app <Ionic devapp>, run in the same wifi, if facing a time_out problem, [turn off the firewall](https://forum.ionicframework.com/t/ionic-devapp-net-err-connection-timed-out-http-192-168-0-19-8100-devapp-true/114565/6)
+  Step: Download app <Ionic devapp>, run in the same wifi, if facing a time_out problem, [!TURN OFF the firewall!](https://forum.ionicframework.com/t/ionic-devapp-net-err-connection-timed-out-http-192-168-0-19-8100-devapp-true/114565/6)
 
   Problem: [Issus: Got no console log on device once error.](https://forum.ionicframework.com/t/devapp-on-ionic-4-issue-no-console-log/141723/31)
 
@@ -418,7 +418,7 @@ import { File } from '@ionic-native/file'; // NG
 - [File location](https://github.com/apache/cordova-plugin-file)
 
 ### 20190807
-### Statistic chart
+### Statistic chart, ion-datetime, ionic navigating lifecycle event
 
 - [Canvas chart in Angular](https://canvasjs.com/angular-charts/)
 
@@ -443,14 +443,24 @@ import { File } from '@ionic-native/file'; // NG
 ```
 - [Canvas import using canvas.min.js](https://stackoverflow.com/questions/51034968/canvas-js-issue-with-angular5)
 
+- [Ionic ion-datetime](https://ionicframework.com/docs/api/datetime)
 
-### DOING
+- [Ionic navigating lifecycle event](https://ionicframework.com/blog/navigating-lifecycle-events/)
 
-- Date select range
+```javascript
+// Ready
+ionViewDidLoad() {} // A & B
+// Before
+ionViewWillEnter() {} // B
+ionViewWillLeave() {} // A
+// After
+ionViewDidEnter() {} // B
+ionViewDidLeave() {} // A
+```
 
-- Tab layout adjust
+- Bug fix
 
-- Refresh with range change and page display
+- Template adjustment
 
 
 ### TODO
@@ -461,13 +471,19 @@ import { File } from '@ionic-native/file'; // NG
 
   2.[Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
-  3.Button outer border.
+  3.Button css.
+
+  4.Background
+
+  5.Click to copy.
+
+  6.Click to send email.
 
 - Rewrite
 
   1.Global variables
 
-  2.Component chart and range input
+  2.Component charts and range input
 
   3.Sass
 

@@ -1,8 +1,8 @@
-<ion-content [scrollEvents]="true">
-  <table class="table">
+<ion-content>
+  <table class="table" style="position: fixed">
     <tbody>
       <tr>
-        <td style="width:66.66%;">
+        <td style="width:66.66%; padding:6px">
           <div class="dragLabelDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
               [style.padding-top]="lengthRngPaddingB + 'px'"
@@ -23,8 +23,8 @@
           </div>
           <div class="absoluteDiv"
                 id="dateDrag"
-                [style.top]="rangeDateOffset * 20 + 'px'"
-                [style.left]="'0px'">
+                [style.top]="dateEditingFlg ? rangeDateOffset * 20 + 9 + 'px' : rangeDateOffset * 20 - 9 + 'px'"
+                [style.left]="dateEditingFlg ? '50px' : '0px'">
           </div>
           <div class="chartDiv"
               [style.height]="lengthRngFull + 2 + 'px'"
@@ -109,7 +109,7 @@
         </td>
       </tr>
       <tr>
-        <td style="width:66.66%; padding-top:0px; padding-bottom:0px;">
+        <td style="width:66.66%; padding-top:0px; padding-bottom:0px; border:none">
           <button type="button" class="btn btn-primary customLabel"
           style="background-color:black;"
           (click)="onLabelRevert()">Revert</button>

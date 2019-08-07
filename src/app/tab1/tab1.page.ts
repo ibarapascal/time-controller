@@ -299,13 +299,15 @@ export class Tab1Page {
     let recordCal: {timestamp: number, label: string, color: string}[];
     // Remove
     await this.storageDB.get('record').then(x => {
-      const r = JSON.parse(x);
+      let r = JSON.parse(x);
       recordCal = r.filter((obj: { timestamp: number; }) => obj.timestamp >= timeDayStart && obj.timestamp < timeDayEnd);
       const deleteTimestamp = this.arrayGetThePreviousOne(recordCal, this.timeSet).timestamp;
       // If no record to move beyond the time picked from range, then do nothing.
       if (deleteTimestamp !== 0) {
         r.splice(r.indexOf(r.filter((obj: { timestamp: number; }) => obj.timestamp === deleteTimestamp)[0]), 1);
       }
+      // If label added the same with the next one, delete the next one from record.
+      r = this.arrayRemoveCurrRepeatByLabel(r);
       this.recordList = r;
       this.storageDB.set('record', JSON.stringify(this.recordList)).catch(e => {console.error(e); });
     }).catch(e => {console.error(e); });
@@ -679,7 +681,7 @@ export class Tab1Page {
         await alert.present();
         break;
       }
-      // Confirm to impot
+      // Confirm to import
       case('areYouSureToImport'): {
         const alert = await this.alertController.create({
           header: 'Confirming, are you really want to do this?',
