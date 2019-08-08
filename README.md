@@ -41,7 +41,7 @@ An application which can let you:
 
 - [EventListener](#20190725)
 
-- [setInterval: fontColor, input time drag](#20190726)
+- [SetInterval: fontColor, input time drag](#20190726)
 
 - [Module: ColorPicker](#20190727)
 
@@ -58,6 +58,8 @@ An application which can let you:
 - [Export / import data via file](#20190805)
 
 - [Statistic chart, navigating lifecycle event](#20190807)
+
+- [Tslint check, flesh button](#20190808)
 
 - [TODO](#TODO)
 
@@ -468,19 +470,60 @@ this.timeStart = this.dateStart ? Math.floor(Date.parse(this.dateStart) / 1000  
 - Template adjustment
 
 
+### 20190808
+### Tslint check, flesh button
+
+- Tslint check [document](https://palantir.github.io/tslint/usage/cli/)
+
+  Error: no-use-before-declare is deprecated. Since TypeScript 2.9. Please use the built-in compiler checks instead. => Solution: [Delete related item in tslint.json](https://github.com/progre/tslint-config-airbnb/issues/54)
+
+```shell
+tslint -p tsconfig.json -c tslint.json -o output.txt
+```
+
+- Flesh button, refer to [Zhihu Dalao](https://zhuanlan.zhihu.com/p/76332099)
+
+  [CSS Pseudo Classes](https://www.w3schools.com/css/css_pseudo_classes.asp)
+
+```css
+button.flash::after {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  background: white;
+  top: -50%;
+  left: 5%;
+  bottom: -50%;
+  width: 1.5em;
+  transform: translate3d(-200%, 0, 0) rotate(35deg);
+}
+button.flash:disabled::after {
+  transition: transform 0.2s ease-in-out;
+  transform: translate3d(500%, 0, 0) rotate(35deg);
+}
+```
+
+
 ### TODO
 
 - Feature:
 
-  1.Restore the storage json file into external position.
+  ~~1.Restore the storage json file into external position.~~
 
   2.[Drag & drop unfunction](https://github.com/valor-software/ng2-dragula)
 
-  3.Button css refer to [Zhihu Dalao](https://zhuanlan.zhihu.com/p/76332099)
+  ~~3.Button css refer to [Zhihu Dalao](https://zhuanlan.zhihu.com/p/76332099)~~
 
-  4.Date picker default, chart hours, selectable options.
+  ~~- CSS Pseudo Classes~~
 
-  5.Contact page: Click to copy & send email.
+    ~~[::after](https://developer.mozilla.org/en-US/docs/Web/CSS/::after)~~
+
+    ~~[:hover](https://www.w3schools.com/css/css_pseudo_classes.asp)~~
+
+
+  ~~4.Date picker default, chart hours, selectable options.~~
+
+  5.Contact page: [Press to copy](https://ionicframework.com/docs/native/clipboard)
 
   6.[Set focus to element by id in Angular / Ionic](https://stackoverflow.com/questions/46720611/how-to-use-angular4-to-set-focus-by-element-id)
 

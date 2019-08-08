@@ -67,7 +67,9 @@
                 [style.background-color]="item.color"
                 [style.width]="labelEditingFlg ? '80%' : '100%'"
                 [style.color]="item.color && this.cs.checkIfFontColorToWhite(item.color) ? 'white' : 'black'"
-                [style.border]="item.label === labelLast && !labelEditingFlg && !dateEditingFlg && flashCssFlg ? '2px solid ' + item.color : '2px solid white'"
+                [style.border]="'2px solid white'"
+                class="item.label === labelLast && !labelEditingFlg && !dateEditingFlg ? flash : null"
+                [disabled]="item.label === labelLast && !labelEditingFlg && !dateEditingFlg && flashCssSpecialFlg ? true : false"
                 (click)="onLabelClick(item.label)">
                 {{item.label}}
               </button>

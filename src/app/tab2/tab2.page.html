@@ -2,13 +2,10 @@
   <div id="chartContainer" style="margin-top:20px; height: 300px; width: 100%;"></div>
   <ion-item>
     {{(timeEnd - timeStart) / 86400 + 1}} day(s) calculating
+    <div style="position: fixed; right: 5%">
+      <button style="background: none; border: none;" (click)="onClickDefault()">Default</button>
+    </div>
   </ion-item>
-  <!-- <ion-item>
-    <ion-range id="dual-range" dual-knobs pin color="dark" style="padding-top:5px;padding-bottom:5px;">
-      <ion-icon slot="start" size="small" name="brush"></ion-icon>
-      <ion-icon slot="end" name="brush"></ion-icon>
-    </ion-range>
-  </ion-item> -->
   <ion-item>
     <ion-datetime displayFormat="YYYY/MM/DD"
                   id="inputDateStart"

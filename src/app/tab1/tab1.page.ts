@@ -23,6 +23,8 @@ export class Tab1Page {
   recordRngEditingFlg = 0;
   // Edit date flag
   dateEditingFlg = 0;
+  // Flash css special flag
+  flashCssSpecialFlg = 0;
   // Flash css flag
   flashCssFlg = 0;
   // display id and timestamp list
@@ -170,6 +172,10 @@ export class Tab1Page {
 
   // Refresh
   refreshElementPeriodically() {
+    // Refresh button flash
+    setInterval(() => {
+      this.flashCssSpecialFlg = this.flashCssSpecialFlg === 100 ? 0 : this.flashCssSpecialFlg + 1;
+    }, 10);
     // Refresh every second
     setInterval(() => {
       // Synchronize the cursor in range if not in editing
@@ -515,7 +521,8 @@ export class Tab1Page {
       storage.setting = JSON.parse(x); });
     await this.storageDB.get('record').then(x => {
       storage.record = JSON.parse(x); });
-    await this.file.writeFile(this.file.externalDataDirectory, this.fileName, JSON.stringify(storage), {replace: true});
+    // cordova.file.externalRootDirectory - External storage (SD card) root. (Android, BlackBerry 10)
+    await this.file.writeFile(this.file.externalRootDirectory, this.fileName, JSON.stringify(storage), {replace: true});
   }
 
   // Import
@@ -527,7 +534,8 @@ export class Tab1Page {
       setting: Object,
       record: Object,
     };
-    await this.file.readAsBinaryString(this.file.externalDataDirectory, this.fileName).then(data => storage = JSON.parse(data));
+    // cordova.file.externalRootDirectory - External storage (SD card) root. (Android, BlackBerry 10)
+    await this.file.readAsBinaryString(this.file.externalRootDirectory, this.fileName).then(data => storage = JSON.parse(data));
     await this.storageDB.set('setting', JSON.stringify(storage.setting)).catch(e => {console.error(e); });
     await this.storageDB.set('record', JSON.stringify(storage.record)).catch(e => {console.error(e); });
     // Reinit the local variables

@@ -95,12 +95,23 @@ export class Tab2Page {
     this.dateStart = this.dateStart ? this.dateStart.slice(0, 10) : '';
     this.dateEnd = this.dateEnd ? this.dateEnd.slice(0, 10) : '';
     // Transfer YYYY-MM-DD to timestamp
-    this.timeStart = this.dateStart ? Math.floor(Date.parse(this.dateStart) / 1000  + this.timeoffset) : 0;
-    this.timeEnd = this.dateEnd ? Math.floor(Date.parse(this.dateEnd) / 1000 + this.timeoffset) : this.timeToday;
+    this.timeStart = this.dateStart
+      ? Math.floor(Date.parse(this.dateStart) / 1000  + this.timeoffset)
+      : this.ts.getTimestampToday() - 86400 * 29;
+    this.timeEnd = this.dateEnd
+      ? Math.floor(Date.parse(this.dateEnd) / 1000 + this.timeoffset)
+      : this.ts.getTimestampToday();
     // Calculate render data
     this.processData();
     // ngOnInit complete
     this.chartRender();
+  }
+
+  onClickDefault() {
+    // Notice that this would run this.onDateChanged() after
+    this.dateStart = '';
+    this.dateEnd = '';
+    this.animationChartFlg = true;
   }
 
   chartRender() {
