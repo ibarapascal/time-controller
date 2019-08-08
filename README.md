@@ -7,9 +7,9 @@ Keywords: Angular, Ionic, Cordova, Android, Typescript, Bootstrap, Time, Managem
 [Try it on your phone (Android 9 apk)](https://github.com/ibarapascal/time-controller/blob/master/TimeController.apk)
 
 
-## Current layout in 2019/08/02
+## Current layout in 2019/08/08
 
-![Current layout gif](https://raw.githubusercontent.com/ibarapascal/time-controller/master/record/devGif/SVID_20190802_221713_1.gif)
+![Current layout gif](https://raw.githubusercontent.com/ibarapascal/time-controller/master/record/devGif/SVID_20190808_235716_1.gif)
 
 
 ## Introduction
@@ -24,7 +24,7 @@ An application which can let you:
   
 - Give full statistic data and chart.
   
-- Save and export the record data to remote storage.
+- Save and export the record data to external storage.
 
 
 ## Dev record link
@@ -532,11 +532,11 @@ button.flash:disabled::after {
 
   1.Global variables
 
-  2.Component charts and range input
+  2.Charts and range input => Component
 
-  3.Sass
+  3.Sass px->em, class etc
 
-- Release and deploy on Google Play
+- Rewrite using React
 
 
 

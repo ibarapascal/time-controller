@@ -64,10 +64,10 @@
           <div *ngIf="labelList.length">
             <div *ngFor="let item of labelList" style="margin-bottom:6px">
               <button type="button" class="btn btn-primary customLabel"
+                style="margin-bottom:4px;"
                 [style.background-color]="item.color"
                 [style.width]="labelEditingFlg ? '80%' : '100%'"
                 [style.color]="item.color && this.cs.checkIfFontColorToWhite(item.color) ? 'white' : 'black'"
-                [style.border]="'2px solid white'"
                 class="item.label === labelLast && !labelEditingFlg && !dateEditingFlg ? flash : null"
                 [disabled]="item.label === labelLast && !labelEditingFlg && !dateEditingFlg && flashCssSpecialFlg ? true : false"
                 (click)="onLabelClick(item.label)">
@@ -95,14 +95,14 @@
               +
             </button>
           </div>
-          <div style="position:absolute; width:80%; bottom:12px">
+          <div style="position:absolute; width:100px; bottom:10px">
             <button *ngIf="labelEditingFlg" type="button" class="btn btn-primary customLabel"
-              style="background-color:gray; margin-bottom: 10px;"
+              style="background-color:#C4C4C4; margin-bottom: 10px;"
               (click)="onLabelDefault()">
               Default
             </button>
             <button type="button" class="btn btn-primary customLabel"
-              style="background-color:gray;"
+              style="background-color:#C4C4C4;"
               (click)="onLabelEdit()">
               <div *ngIf="!labelEditingFlg">Edit</div>
               <div *ngIf="labelEditingFlg">Return</div>
@@ -113,15 +113,15 @@
       <tr>
         <td style="width:66.66%; padding-top:0px; padding-bottom:0px; border:none">
           <button type="button" class="btn btn-primary customLabel"
-          style="background-color:black;"
+          style="background-color:gray;"
           (click)="onLabelRevert()">Revert</button>
         </td>
-        <td style="text-align:right; padding:0px;">
+        <td style="padding:0px;">
           <button type="button" class="btn btn-primary customLabel"
-          style="background-color:gray; width:50%;"
+          style="background-color:#C4C4C4; width:45%;"
           (click)="onClickExport()">Exp</button>
           <button type="button" class="btn btn-primary customLabel"
-          style="background-color:gray; width:50%;"
+          style="background-color:#C4C4C4; width:45%;"
           (click)="onClickImport()">Imp</button>
         </td>
       </tr>

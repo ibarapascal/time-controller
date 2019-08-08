@@ -174,8 +174,8 @@ export class Tab1Page {
   refreshElementPeriodically() {
     // Refresh button flash
     setInterval(() => {
-      this.flashCssSpecialFlg = this.flashCssSpecialFlg === 100 ? 0 : this.flashCssSpecialFlg + 1;
-    }, 10);
+      this.flashCssSpecialFlg = this.flashCssSpecialFlg === 20 ? 0 : this.flashCssSpecialFlg + 1;
+    }, 50);
     // Refresh every second
     setInterval(() => {
       // Synchronize the cursor in range if not in editing

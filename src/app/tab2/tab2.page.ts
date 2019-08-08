@@ -153,7 +153,9 @@ export class Tab2Page {
           : this.renderDataList.push({
             name: labelRending,
             y: timeDelta,
-            color: this.settingList.filter(setting => setting.label === labelRending)[0].color,
+            color: this.settingList.filter(setting => setting.label === labelRending)[0]
+              ? this.settingList.filter(setting => setting.label === labelRending)[0].color
+              : '#808080',
           });
       }
     });
